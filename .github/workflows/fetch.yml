@@ -1,0 +1,35 @@
+name: Fetch research data
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Python script in src/ to run"
+        default: "research_fetch.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-run          # never overlap with the daily trading run (both commit)
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt requests
+      - run: python src/${{ inputs.script }}
+      - name: Save
+        run: |
+          git config user.name "trading-bot"
+          git config user.email "trading-bot@users.noreply.github.com"
+          git add research
+          git diff --cached --quiet || git commit -m "Research fetch $(date -u +%F)"
+          git pull --rebase -q origin main && git push

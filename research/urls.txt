@@ -1,0 +1,12 @@
+ftse100_history.pdf https://www.lseg.com/content/dam/ftse-russell/en_us/documents/policy-documents/ftse-100-constituent-history.pdf
+ftse250_history.pdf https://www.lseg.com/content/dam/ftse-russell/en_us/documents/policy-documents/ftse-250-constituent-history.pdf
+wiki_ftse100.html https://en.wikipedia.org/wiki/FTSE_100_Index
+wiki_ftse250.html https://en.wikipedia.org/wiki/FTSE_250_Index
+review_2025_03.html https://mondovisione.com/news/ftse-uk-index-series-quarterly-review-march-2025-202537
+review_2025_06.html https://www.lseg.com/en/media-centre/press-releases/ftse-russell/2025/ftse-uk-index-series-annual-review-june-2025
+review_2025_09.html https://www.lseg.com/en/media-centre/press-releases/ftse-russell/2025/ftse-uk-index-series-review-september-2025
+review_2025_12.html https://www.lseg.com/en/media-centre/press-releases/ftse-russell/2025/ftse-uk-index-series-review-december-2025
+review_2026_03.html https://www.lseg.com/en/media-centre/press-releases/ftse-russell/2026/ftse-uk-index-series-review-march-2026
+review_2026_06.html https://www.lseg.com/en/media-centre/press-releases/ftse-russell/2026/ftse-uk-index-series-review-june-2026
+review_2026_09.html https://www.lseg.com/en/media-centre/press-releases/ftse-russell/2026/ftse-uk-index-series-review-september-2026
+review_2026_09_mv.html https://mondovisione.com/news/ftse-uk-index-series-quarterly-review-september-2026-202693/

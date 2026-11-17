@@ -1,0 +1,304 @@
+{
+  "generated_at_utc": "2026-11-17 13:22",
+  "market_date": "2026-11-16",
+  "gbpusd": 1.3216,
+  "model": "LightGBM",
+  "paper": {
+    "start_date": "2026-11-16",
+    "start_value_gbp": 100.0,
+    "value_gbp": 100.0,
+    "sp500_value_gbp": 100.0,
+    "return_since_start": 0.0,
+    "sp500_return_since_start": 0.0,
+    "day_change": null,
+    "sp500_day_change": null
+  },
+  "holdings": [
+    {
+      "ticker": "WDC",
+      "sector": "Information Technology",
+      "shares": 0.047046,
+      "price_usd": 280.93,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.7334
+    },
+    {
+      "ticker": "TER",
+      "sector": "Information Technology",
+      "shares": 0.056992,
+      "price_usd": 231.9,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.7322
+    },
+    {
+      "ticker": "FIX",
+      "sector": "Industrials",
+      "shares": 0.012496,
+      "price_usd": 1057.68,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6813
+    },
+    {
+      "ticker": "FIS",
+      "sector": "Financials",
+      "shares": 0.467014,
+      "price_usd": 28.3,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6731
+    },
+    {
+      "ticker": "VRT",
+      "sector": "Industrials",
+      "shares": 0.070051,
+      "price_usd": 188.67,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6439
+    },
+    {
+      "ticker": "COIN",
+      "sector": "Financials",
+      "shares": 0.110285,
+      "price_usd": 119.84,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6358
+    },
+    {
+      "ticker": "RDDT",
+      "sector": "Communication Services",
+      "shares": 0.142312,
+      "price_usd": 92.87,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6299
+    },
+    {
+      "ticker": "NRG",
+      "sector": "Utilities",
+      "shares": 0.140616,
+      "price_usd": 93.99,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6161
+    },
+    {
+      "ticker": "CSGP",
+      "sector": "Real Estate",
+      "shares": 0.423063,
+      "price_usd": 31.24,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6095
+    },
+    {
+      "ticker": "MKC",
+      "sector": "Consumer Staples",
+      "shares": 0.280426,
+      "price_usd": 47.13,
+      "value_gbp": 10.0,
+      "entry_date": "2026-11-16",
+      "return_since_entry": 0.0,
+      "score": 0.6049
+    }
+  ],
+  "last_rebalance": {
+    "date": "2026-11-16",
+    "trades": [
+      {
+        "date": "2026-11-16",
+        "ticker": "COIN",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "CSGP",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "FIS",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "FIX",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "MKC",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "NRG",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "RDDT",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "TER",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "VRT",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "WDC",
+        "action": "BUY",
+        "why": "New in the top 10",
+        "before_gbp": 0.0,
+        "after_gbp": 10.0,
+        "change_gbp": 10.0
+      }
+    ]
+  },
+  "next_rebalance_in_trading_days": 21,
+  "rebalanced_today": true,
+  "backtest": {
+    "generated": "2026-11-16",
+    "period": [
+      "2014-01-06",
+      "2026-10-15"
+    ],
+    "auc": {
+      "Logistic regression": 0.4939,
+      "LightGBM": 0.5022,
+      "Ensemble": 0.4981,
+      "Momentum rule": 0.4943
+    },
+    "table": {
+      "Logistic regression": {
+        "CAGR": 0.0545,
+        "Volatility": 0.2826,
+        "Sharpe": 0.3132,
+        "Max drawdown": -0.4744,
+        "Win rate": 0.526,
+        "\u00a3100 grew to": 197.6285
+      },
+      "LightGBM": {
+        "CAGR": 0.1461,
+        "Volatility": 0.2536,
+        "Sharpe": 0.6579,
+        "Max drawdown": -0.397,
+        "Win rate": 0.539,
+        "\u00a3100 grew to": 575.6643
+      },
+      "Ensemble": {
+        "CAGR": 0.1112,
+        "Volatility": 0.2574,
+        "Sharpe": 0.5292,
+        "Max drawdown": -0.2744,
+        "Win rate": 0.526,
+        "\u00a3100 grew to": 386.9606
+      },
+      "Momentum rule": {
+        "CAGR": 0.0966,
+        "Volatility": 0.1951,
+        "Sharpe": 0.5722,
+        "Max drawdown": -0.2795,
+        "Win rate": 0.6039,
+        "\u00a3100 grew to": 326.5643
+      },
+      "Equal-weight (all)": {
+        "CAGR": 0.1405,
+        "Volatility": 0.1277,
+        "Sharpe": 1.0985,
+        "Max drawdown": -0.1851,
+        "Win rate": 0.6494,
+        "\u00a3100 grew to": 540.1368
+      },
+      "S&P 500 tracker (\u00a3)": {
+        "CAGR": 0.1549,
+        "Volatility": 0.1265,
+        "Sharpe": 1.2088,
+        "Max drawdown": -0.1472,
+        "Win rate": 0.6623,
+        "\u00a3100 grew to": 634.9435
+      }
+    },
+    "coverage": {
+      "2012": 0.728,
+      "2013": 0.745,
+      "2014": 0.754,
+      "2015": 0.77,
+      "2016": 0.797,
+      "2017": 0.821,
+      "2018": 0.84,
+      "2019": 0.865,
+      "2020": 0.893,
+      "2021": 0.91,
+      "2022": 0.931,
+      "2023": 0.949,
+      "2024": 0.956,
+      "2025": 0.968,
+      "2026": 0.983
+    }
+  },
+  "verdict": {
+    "model_sharpe": 0.6579,
+    "equal_weight_sharpe": 1.0985,
+    "sp500_sharpe": 1.2088,
+    "beats_equal_weight": false,
+    "beats_sp500": false
+  },
+  "warnings": [],
+  "disclaimer": "Paper trading / research only. Not financial advice."
+}

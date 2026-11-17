@@ -1,0 +1,181 @@
+{
+  "positions": {
+    "WDC": {
+      "shares": 0.04704552534356039,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 280.92999267578125,
+      "last_price_usd": 280.92999267578125,
+      "sector": "Information Technology",
+      "score": 0.7334
+    },
+    "TER": {
+      "shares": 0.056992235610382504,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 231.89999389648438,
+      "last_price_usd": 231.89999389648438,
+      "sector": "Information Technology",
+      "score": 0.7322
+    },
+    "FIX": {
+      "shares": 0.012495743910290997,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 1057.6800537109375,
+      "last_price_usd": 1057.6800537109375,
+      "sector": "Industrials",
+      "score": 0.6813
+    },
+    "FIS": {
+      "shares": 0.46701411471725074,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 28.299999237060547,
+      "last_price_usd": 28.299999237060547,
+      "sector": "Financials",
+      "score": 0.6731
+    },
+    "VRT": {
+      "shares": 0.07005087835088616,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 188.6699981689453,
+      "last_price_usd": 188.6699981689453,
+      "sector": "Industrials",
+      "score": 0.6439
+    },
+    "COIN": {
+      "shares": 0.11028454183969257,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 119.83999633789062,
+      "last_price_usd": 119.83999633789062,
+      "sector": "Financials",
+      "score": 0.6358
+    },
+    "RDDT": {
+      "shares": 0.14231181974075174,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 92.87000274658203,
+      "last_price_usd": 92.87000274658203,
+      "sector": "Communication Services",
+      "score": 0.6299
+    },
+    "NRG": {
+      "shares": 0.14061601649731803,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 93.98999786376953,
+      "last_price_usd": 93.98999786376953,
+      "sector": "Utilities",
+      "score": 0.6161
+    },
+    "CSGP": {
+      "shares": 0.42306335425820163,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 31.239999771118164,
+      "last_price_usd": 31.239999771118164,
+      "sector": "Real Estate",
+      "score": 0.6095
+    },
+    "MKC": {
+      "shares": 0.28042645428955937,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 47.130001068115234,
+      "last_price_usd": 47.130001068115234,
+      "sector": "Consumer Staples",
+      "score": 0.6049
+    }
+  },
+  "cash_gbp": -0.0,
+  "last_rebalance": "2026-11-16",
+  "model": "LightGBM",
+  "spy_units": 0.17861340458356323,
+  "start_date": "2026-11-16",
+  "last_trades": [
+    {
+      "date": "2026-11-16",
+      "ticker": "COIN",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "CSGP",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "FIS",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "FIX",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "MKC",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "NRG",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "RDDT",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "TER",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "VRT",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "WDC",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    }
+  ]
+}

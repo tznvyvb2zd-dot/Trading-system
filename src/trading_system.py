@@ -1,11 +1,14 @@
 """
-Daily trading system (paper trading, £100).
+UK trading system: FTSE 350, paper trading, £100.
 
-Every weekday (run by GitHub Actions):
-  * marks the paper portfolio to market and records its value vs an S&P 500 tracker
-  * every ~1 month (21 trading days) re-runs the walk-forward backtest on the REAL
-    point-in-time S&P 500, retrains the chosen model and rebalances the paper portfolio
-  * writes data/results.json (machine-readable, for Claude) and docs/index.html (dashboard)
+Every weekday (GitHub Actions):
+  * downloads FTSE 350 prices (point-in-time membership, incl. companies that later left the index)
+  * re-scores every member with the current model
+  * DAILY CHECK: sells any holding that has fallen out of the top BUFFER_RANK and swaps in the best-ranked
+    replacement (keeps trading - and 0.5% stamp duty - low)
+  * every ~21 trading days (monthly): re-runs the honest walk-forward backtest, picks the best model,
+    and fully re-picks the top 10 (max 2 per sector)
+  * writes data/results.json (for Claude) and docs/index.html (live dashboard)
 
 Learning / research tool. Not financial advice.
 """
@@ -29,33 +32,35 @@ warnings.filterwarnings("ignore")
 # ---------------------------------------------------------------- settings
 ROOT = Path(os.environ.get("TS_ROOT", Path(__file__).resolve().parents[1]))
 DATA, DOCS = ROOT / "data", ROOT / "docs"
+UKDIR = ROOT / "data" / "uk"                      # membership + sector files (committed)
+MEMBERSHIP = UKDIR / "ftse350_membership.csv"
+SECTORS = UKDIR / "ftse350_sectors.csv"
 
-MEMBERSHIP_URL = os.environ.get("TS_MEMBERSHIP_URL",
-    "https://raw.githubusercontent.com/fja05680/sp500/master/S%26P%20500%20Historical%20Components%20%26%20Changes%20(Updated).csv")
-SECTORS_URL = os.environ.get("TS_SECTORS_URL", "https://raw.githubusercontent.com/fja05680/sp500/master/sp500.csv")
-RENAMES = {"FB": "META", "ANTM": "ELV", "ABC": "COR", "PKI": "RVTY", "WLTW": "WTW", "CTL": "LUMN",
-           "RE": "EG", "FLT": "CPAY", "HCP": "DOC", "PEAK": "DOC"}
+MARKET = "ISF.L"                                  # iShares Core FTSE 100: market proxy for features
+BENCHMARKS = {"FTSE 100 tracker": "ISF.L", "FTSE 250 tracker": "MIDD.L"}
+START = "2010-01-01"
+H = 21                    # monthly re-pick + prediction horizon (trading days)
+TRAIN_STEP = 5            # train on every 5th day (overlapping monthly targets add little)
+RETRAIN_EVERY = 126       # walk-forward: retrain every ~6 months
+MIN_TRAIN = 504           # ~2 years before the first prediction
 
-BENCHMARK, FX_TICKER = "SPY", "GBPUSD=X"
-START = "2012-01-01"
-H = 21                 # rebalance / holding period in trading days (~1 month)
-TRAIN_STEP = 5
-RETRAIN_EVERY = 126
-MIN_TRAIN = 504
-
-START_CAPITAL = 100.0  # £
-COST_BPS = 0           # Trading 212 USD wallet
+START_CAPITAL = 100.0     # £
+BUY_COST_BPS = 60         # 0.5% stamp duty (SDRT) + ~0.1% spread on every UK share purchase
+SELL_COST_BPS = 10        # ~0.1% spread on sales (no stamp duty)
 TOP_N = 10
 MAX_PER_SECTOR = 2
-SIGNAL_MODEL = os.environ.get("TS_SIGNAL_MODEL", "auto")   # or a model name
+BUFFER_RANK = 50          # daily check: sell a holding only if its smoothed rank drops below this
+SMOOTH_DAYS = 10          # daily check uses a 10-day smoothed score (ignores one-day noise)
+MAX_SWAPS_PER_DAY = 2     # limits trading (each swap costs ~0.7% incl. stamp duty)
+SIGNAL_MODEL = os.environ.get("TS_SIGNAL_MODEL", "auto")
 
-AS_OF = os.environ.get("AS_OF")                       # testing/backfill: pretend today is this date
+AS_OF = os.environ.get("AS_OF")
 FORCE_REBALANCE = os.environ.get("FORCE_REBALANCE", "").lower() in ("1", "true", "yes")
-
 USE_EARNINGS = os.environ.get("TS_EARNINGS", "1") != "0"
+
 ML_MODELS = ["Logistic regression", "LightGBM", "Ensemble"] + (
     ["LR + earnings", "LightGBM + earnings", "Ensemble + earnings"] if USE_EARNINGS else [])
-SCORES = ML_MODELS + ["Momentum rule"] + (["Earnings drift rule"] if USE_EARNINGS else [])
+SCORES = ML_MODELS + ["Momentum rule"]
 ENSEMBLES = {"Ensemble": ["Logistic regression", "LightGBM"],
              "Ensemble + earnings": ["LR + earnings", "LightGBM + earnings"]}
 
@@ -64,28 +69,29 @@ def log(msg: str) -> None:
     print(f"[{datetime.now(timezone.utc):%H:%M:%S}] {msg}", flush=True)
 
 
+def read_json(p, default):
+    return json.loads(p.read_text()) if p.exists() else default
+
+
+def write_json(p, obj):
+    p.write_text(json.dumps(obj, indent=2, default=str))
+
+
 # ---------------------------------------------------------------- data
-def fix(t: str) -> str:
-    t = t.strip()
-    return RENAMES.get(t, t).replace(".", "-")
-
-
-def load_membership():
-    mem = pd.read_csv(MEMBERSHIP_URL, parse_dates=["date"]).sort_values("date")
-    mem = mem[mem["date"] >= pd.Timestamp(START) - pd.Timedelta(days=400)]
-    sets = [set(fix(t) for t in s.split(",")) for s in mem["tickers"]]
-    tickers = sorted(set().union(*sets))
+def load_membership(dates):
+    mem = pd.read_csv(MEMBERSHIP, parse_dates=["date"]).sort_values("date")
+    sets = [set(s.split(",")) for s in mem["tickers"].fillna("")]
+    tickers = sorted(set().union(*sets) - {""})
     rows = pd.DataFrame([[t in s for t in tickers] for s in sets], index=mem["date"].values, columns=tickers)
-    rows = rows[~rows.index.duplicated(keep="last")]
-    sec = pd.read_csv(SECTORS_URL)
-    sector_of = {fix(s): g for s, g in zip(sec["Symbol"], sec["GICS Sector"])}
-    return rows, tickers, sector_of
+    mask = rows.reindex(dates, method="ffill").fillna(False).astype(bool)
+    sec = pd.read_csv(SECTORS)
+    return mask, tickers, dict(zip(sec["ticker"], sec["sector"]))
 
 
 def _download(tickers, start=START):
     r = yf.download(list(tickers), start=start, auto_adjust=True, progress=False, threads=True)
     c, v = r["Close"], r["Volume"]
-    if isinstance(c, pd.Series):  # single ticker
+    if isinstance(c, pd.Series):
         c, v = c.to_frame(tickers[0]), v.to_frame(tickers[0])
     return c, v
 
@@ -107,15 +113,34 @@ def download_all(tickers, chunk=100):
     return c.loc[:, ~c.columns.duplicated()], v.loc[:, ~v.columns.duplicated()]
 
 
+def clean_prices(close):
+    """Fix Yahoo's pence/pound unit flips (x100 jumps) and one-day spikes on London prices."""
+    c = close.copy()
+    for t in c.columns:
+        s = c[t].dropna()
+        if len(s) < 3:
+            continue
+        v = s.values.astype(float)
+        ratio = v[1:] / v[:-1]
+        for i in np.where((ratio > 50) | (ratio < 0.02))[0]:          # persistent unit change: rescale history
+            f = v[i + 1] / v[i]
+            v[: i + 1] *= f
+        r = v[1:] / v[:-1]
+        spike = np.where(((r[:-1] > 3) & (r[1:] < 0.4)) | ((r[:-1] < 0.33) & (r[1:] > 2.5)))[0] + 1
+        v[spike] = np.nan                                              # one-day spikes that reverse
+        c.loc[s.index, t] = v
+    return c
+
+
 def market_data():
-    b, _ = _download([BENCHMARK, FX_TICKER])
-    dates = b[BENCHMARK].dropna().index
+    b, _ = _download(list(dict.fromkeys([MARKET] + list(BENCHMARKS.values()))))
+    dates = b[MARKET].dropna().index
     if AS_OF:
         dates = dates[dates <= pd.Timestamp(AS_OF)]
-    return dates, b[BENCHMARK].reindex(dates).ffill(), b[FX_TICKER].reindex(dates).ffill()
+    return dates, b.reindex(dates).ffill()
 
 
-# ---------------------------------------------------------------- features (as notebook v5)
+# ---------------------------------------------------------------- features
 OLD_FEATURES = ["ret_5d", "ret_20d", "ret_60d", "rel_strength_20d", "vol_20d", "ma_gap_20_50",
                 "dist_200ma", "rsi_14", "volume_z", "mkt_ret_20d", "mkt_vol_20d"]
 RANKED = ["ret_5d", "ret_20d", "ret_60d", "vol_20d", "rsi_14", "dist_52w_high"]
@@ -131,10 +156,10 @@ def rsi(prices, n=14):
     return 100 - 100 / (1 + gain / loss)
 
 
-def build_dataset(close, volume, spy, mask, sector_of, keep_dates, earn_f=None, earn_rule=None):
+def build_dataset(close, volume, mkt, mask, sector_of, keep_dates, earn_f=None):
     cols = close.columns
-    r1, mkt_r1 = close.pct_change(fill_method=None), spy.pct_change()
-    mkt_ret20, mkt_vol20 = spy.pct_change(20), mkt_r1.rolling(20).std()
+    r1, mkt_r1 = close.pct_change(fill_method=None), mkt.pct_change()
+    mkt_ret20, mkt_vol20 = mkt.pct_change(20), mkt_r1.rolling(20).std()
     sectors = np.array([sector_of.get(t, "Unknown") for t in cols])
     bc = lambda s: pd.DataFrame(np.repeat(s.values[:, None], len(cols), axis=1), index=close.index, columns=cols)
     f = {
@@ -155,18 +180,17 @@ def build_dataset(close, volume, spy, mask, sector_of, keep_dates, earn_f=None, 
     for k in RANKED:
         f[f"rank_{k}"] = f[k].where(mask).rank(axis=1, pct=True)
 
-    fwd = close.shift(-H) / close - 1                      # FUTURE return: training label only
+    fwd = close.shift(-H) / close - 1                     # FUTURE return: training label only
     fwd_m = fwd.where(mask)
     target = fwd_m.gt(fwd_m.median(axis=1), axis=0).astype(float).where(fwd_m.notna())
 
     km = mask.loc[keep_dates]
     to_long = lambda w: w.loc[keep_dates].where(km).unstack().swaplevel()
-    df = pd.concat({k: to_long(f[k]) for k in FEATURES}, axis=1)
-    df = df.replace([np.inf, -np.inf], np.nan).dropna().astype("float32")
-    if earn_f is not None:                                 # earnings features are pre-filled (no NaN)
+    df = pd.concat({k: to_long(f[k]).astype("float32") for k in FEATURES}, axis=1)
+    df = df.replace([np.inf, -np.inf], np.nan).dropna()
+    if earn_f is not None:
         for k in EARN_FEATURES:
             df[k] = to_long(earn_f[k]).reindex(df.index).fillna(0).astype("float32")
-        df["earn_rule"] = to_long(earn_rule).reindex(df.index).astype("float32")
     df["fwd_ret"] = to_long(fwd).reindex(df.index)
     df["target"] = to_long(target).reindex(df.index)
     df.index.names = ["date", "ticker"]
@@ -192,35 +216,44 @@ def make_models():
     return models
 
 
-def walk_forward(df, dates, rebal_set):
-    lab = df.dropna(subset=["target"])
-    lab_d, all_d = lab.index.get_level_values("date"), df.index.get_level_values("date")
-    outs = []
-    for start in range(MIN_TRAIN, len(dates), RETRAIN_EVERY):
-        test_days = [d for d in dates[start:start + RETRAIN_EVERY] if d in rebal_set]
-        test = df[all_d.isin(test_days)]
-        if test.empty:
-            continue
-        train = lab[lab_d <= dates[start - H - 1]]                 # gap = holding period: no leakage
-        out = test[["fwd_ret", "target", "ret_60d"] + (["earn_rule"] if USE_EARNINGS else [])].copy()
-        for name, m in make_models().items():
-            m.fit(train[feats_for(name)], train["target"])
-            out[name] = m.predict_proba(test[feats_for(name)])[:, 1]
-        outs.append(out)
-        log(f"walk-forward: trained to {dates[start - H - 1].date()}")
-    p = pd.concat(outs)
+def add_derived(p):
     for ens, parts in ENSEMBLES.items():
         if all(c in p for c in parts):
             p[ens] = p[parts].mean(axis=1)
     p["Momentum rule"] = p["ret_60d"]
-    if USE_EARNINGS:
-        p["Earnings drift rule"] = p["earn_rule"].fillna(-1)
     return p
 
 
-def pick_with_caps(ranked, n, cap, sector_of):
+def walk_forward(df, dates, train_set):
+    """Train on the past only (gap = H days), predict EVERY day of the next ~6 months."""
+    lab = df.dropna(subset=["target"])
+    lab = lab[lab.index.get_level_values("date").isin(train_set)]
+    lab_d, all_d = lab.index.get_level_values("date"), df.index.get_level_values("date")
+    outs = []
+    for start in range(MIN_TRAIN, len(dates), RETRAIN_EVERY):
+        window = dates[start:start + RETRAIN_EVERY]
+        test = df[(all_d >= window[0]) & (all_d <= window[-1])]
+        if test.empty:
+            continue
+        train = lab[lab_d <= dates[start - H - 1]]
+        out = test[["ret_60d"]].copy()
+        for name, m in make_models().items():
+            m.fit(train[feats_for(name)], train["target"])
+            out[name] = m.predict_proba(test[feats_for(name)])[:, 1].astype("float32")
+        outs.append(out)
+        log(f"walk-forward: trained to {dates[start - H - 1].date()}")
+    preds = add_derived(pd.concat(outs))
+    return preds, df.loc[preds.index, ["target"]]
+
+
+# ---------------------------------------------------------------- portfolio rules
+def pick_with_caps(ranked, n, cap, sector_of, held=()):
     picks, count = [], {}
+    for t in held:
+        s = sector_of.get(t, "Unknown"); count[s] = count.get(s, 0) + 1
     for t in ranked:
+        if t in held or t in picks:
+            continue
         s = sector_of.get(t, "Unknown")
         if cap and s != "Unknown" and count.get(s, 0) >= cap:
             continue
@@ -230,228 +263,341 @@ def pick_with_caps(ranked, n, cap, sector_of):
     return picks
 
 
-def run_backtest(preds, spy, fx, sector_of):
-    gbp_mult = (fx / fx.shift(-H)).fillna(1)
-    spy_fwd = spy.shift(-H) / spy - 1
-    curves = {}
-    for s in SCORES + ["Equal-weight (all)"]:
-        rets, prev = {}, pd.Series(dtype=float)
-        for d, day in preds.groupby(level="date"):
-            day = day.droplevel("date").dropna(subset=["fwd_ret"])
-            if day.empty:
-                continue
-            if s == "Equal-weight (all)":
-                w = pd.Series(1 / len(day), index=day.index)
-            else:
-                picks = pick_with_caps(day[s].sort_values(ascending=False).index, TOP_N, MAX_PER_SECTOR, sector_of)
-                w = pd.Series(1 / len(picks), index=picks)
-            gross = (1 + (w * day["fwd_ret"].reindex(w.index)).sum()) * gbp_mult.loc[d]
-            rets[d] = gross - 1 - w.sub(prev, fill_value=0).abs().sum() * COST_BPS / 10_000
-            prev = w
-        curves[s] = pd.Series(rets)
-    idx = curves["Equal-weight (all)"].index
-    curves["S&P 500 tracker (£)"] = pd.Series({d: (1 + spy_fwd.loc[d]) * gbp_mult.loc[d] - 1 for d in idx})
+def daily_swaps(weights, scores_today, sector_of):
+    """Daily check: holdings ranked worse than BUFFER_RANK (or no longer in the index) are swapped out."""
+    ranks = scores_today.rank(ascending=False)
+    out = sorted([t for t in weights.index if t not in ranks.index or ranks[t] > BUFFER_RANK],
+                 key=lambda t: -ranks.get(t, 1e9))[:MAX_SWAPS_PER_DAY]                  # worst first
+    swaps = []
+    for t in out:
+        keep = [h for h in weights.index if h != t and h not in [s[0] for s in swaps]]
+        repl = pick_with_caps(scores_today.sort_values(ascending=False).index, 1, MAX_PER_SECTOR, sector_of,
+                              held=keep + [s[1] for s in swaps])
+        if repl:
+            swaps.append((t, repl[0]))
+    return swaps, ranks
 
-    ppy = 252 / H
-    def stats(r):
-        eq = (1 + r).cumprod()
-        return {"CAGR": eq.iloc[-1] ** (ppy / len(r)) - 1, "Volatility": r.std() * np.sqrt(ppy),
-                "Sharpe": r.mean() / r.std() * np.sqrt(ppy), "Max drawdown": float((eq / eq.cummax() - 1).min()),
-                "Win rate": float((r > 0).mean()), "£100 grew to": float(eq.iloc[-1] * 100)}
-    table = {s: {k: round(float(v), 4) for k, v in stats(r).items()} for s, r in curves.items()}
+
+def simulate(score_w, ret_next, sector_of, daily_check, members):
+    """Day-by-day simulation with stamp duty. Returns daily net returns."""
+    days = score_w.index
+    w = pd.Series(dtype=float)
+    out = {}
+    for i, d in enumerate(days[:-1]):
+        s = score_w.loc[d].dropna()
+        s = s[s.index.isin(members.columns[members.loc[d].values])] if members is not None else s
+        cost = 0.0
+        if i % H == 0:
+            if s.empty:
+                continue
+            picks = pick_with_caps(s.sort_values(ascending=False).index, TOP_N, MAX_PER_SECTOR, sector_of)
+            new = pd.Series(1 / len(picks), index=picks)
+            diff = new.sub(w, fill_value=0)
+            cost = diff.clip(lower=0).sum() * BUY_COST_BPS / 1e4 + (-diff.clip(upper=0)).sum() * SELL_COST_BPS / 1e4
+            w = new
+        elif daily_check and len(w) and not s.empty:
+            swaps, _ = daily_swaps(w, s, sector_of)
+            for old, new_t in swaps:
+                val = w.pop(old)
+                w[new_t] = val
+                cost += val * (BUY_COST_BPS + SELL_COST_BPS) / 1e4
+        if w.empty:
+            continue
+        r = ret_next.loc[d, w.index].fillna(0.0)
+        gross = float((w * r).sum())
+        out[d] = gross - cost
+        w = w * (1 + r) / (1 + gross)                               # weights drift with prices
+    return pd.Series(out)
+
+
+def simulate_daily(score_w, smooth_w, ret_next, sector_of, members):
+    """Monthly re-pick on raw scores; in between, daily check on SMOOTHED scores."""
+    days = score_w.index
+    w = pd.Series(dtype=float)
+    out = {}
+    for i, d in enumerate(days[:-1]):
+        live = members.columns[members.loc[d].values]
+        cost = 0.0
+        if i % H == 0:
+            s = score_w.loc[d].dropna(); s = s[s.index.isin(live)]
+            if s.empty:
+                continue
+            picks = pick_with_caps(s.sort_values(ascending=False).index, TOP_N, MAX_PER_SECTOR, sector_of)
+            new = pd.Series(1 / len(picks), index=picks)
+            diff = new.sub(w, fill_value=0)
+            cost = diff.clip(lower=0).sum() * BUY_COST_BPS / 1e4 + (-diff.clip(upper=0)).sum() * SELL_COST_BPS / 1e4
+            w = new
+        elif len(w):
+            sm = smooth_w.loc[d].dropna(); sm = sm[sm.index.isin(live)]
+            if not sm.empty:
+                for old, new_t in daily_swaps(w, sm, sector_of)[0]:
+                    val = w.pop(old); w[new_t] = val
+                    cost += val * (BUY_COST_BPS + SELL_COST_BPS) / 1e4
+        if w.empty:
+            continue
+        r = ret_next.loc[d, w.index].fillna(0.0)
+        gross = float((w * r).sum())
+        out[d] = gross - cost
+        w = w * (1 + r) / (1 + gross)
+    return pd.Series(out)
+
+
+def stats(r, ppy=252):
+    eq = (1 + r).cumprod()
+    return {"CAGR": float(eq.iloc[-1] ** (ppy / len(r)) - 1), "Volatility": float(r.std() * np.sqrt(ppy)),
+            "Sharpe": float(r.mean() / r.std() * np.sqrt(ppy)), "Max drawdown": float((eq / eq.cummax() - 1).min()),
+            "£100 grew to": float(eq.iloc[-1] * 100)}
+
+
+def run_backtest(preds, targets, close, bench, mask, sector_of):
     from sklearn.metrics import roc_auc_score
-    sc = preds.dropna(subset=["target"])
+    ret_next = close.pct_change(fill_method=None).shift(-1)
+    days = preds.index.get_level_values("date").unique().sort_values()
+    members = mask.loc[days]
+    curves = {}
+    for s in SCORES:
+        wide = preds[s].unstack("ticker").reindex(days)
+        curves[f"{s} · monthly"] = simulate(wide, ret_next, sector_of, False, members)
+        smooth = wide.ewm(span=SMOOTH_DAYS, min_periods=1).mean().where(wide.notna())      # past days only
+        curves[f"{s} · daily check"] = simulate_daily(wide, smooth, ret_next, sector_of, members)
+        log(f"simulated {s}")
+    curves["Equal-weight (all)"] = _equal_weight(members, ret_next)
+    idx = curves["Equal-weight (all)"].index
+    for name, tk in BENCHMARKS.items():
+        curves[name] = bench[tk].pct_change().shift(-1).reindex(idx).fillna(0)
+    table = {k: {m: round(v, 4) for m, v in stats(r).items()} for k, r in curves.items()}
+    sc = preds.join(targets).dropna(subset=["target"])
     auc = {m: round(float(roc_auc_score(sc["target"], sc[m])), 4) for m in SCORES}
-    yearly = {s: {str(y): round(float(v), 4) for y, v in ((1 + r).groupby(r.index.year).prod() - 1).items()}
-              for s, r in curves.items()}
-    growth = {s: {d.strftime("%Y-%m-%d"): round(float(v), 2) for d, v in ((1 + r).cumprod() * 100).items()}
-              for s, r in curves.items()}
-    return {"table": table, "auc": auc, "yearly": yearly, "growth": growth,
+    yearly = {k: {str(y): round(float(v), 4) for y, v in ((1 + r).groupby(r.index.year).prod() - 1).items()}
+              for k, r in curves.items()}
+    growth = {k: {d.strftime("%Y-%m-%d"): round(float(v), 2) for d, v in ((1 + r).cumprod() * 100).iloc[::5].items()}
+              for k, r in curves.items()}
+    daily_vs_monthly = [{"model": s, "sharpe_monthly": table[f"{s} · monthly"]["Sharpe"],
+                         "sharpe_daily": table[f"{s} · daily check"]["Sharpe"],
+                         "cagr_monthly": table[f"{s} · monthly"]["CAGR"],
+                         "cagr_daily": table[f"{s} · daily check"]["CAGR"]} for s in SCORES]
+    return {"table": table, "auc": auc, "yearly": yearly, "growth": growth, "daily_vs_monthly": daily_vs_monthly,
             "period": [idx[0].strftime("%Y-%m-%d"), idx[-1].strftime("%Y-%m-%d")]}
 
 
-# ---------------------------------------------------------------- paper portfolio
-def read_json(p, default):
-    return json.loads(p.read_text()) if p.exists() else default
+def _equal_weight(members, ret_next):
+    """Own every FTSE 350 member equally, rebalanced monthly (with stamp duty on the top-ups)."""
+    out, w = {}, pd.Series(dtype=float)
+    for i, d in enumerate(members.index[:-1]):
+        cost = 0.0
+        if i % H == 0:
+            names = members.columns[members.loc[d].values]
+            names = [t for t in names if pd.notna(ret_next.loc[d, t])]
+            new = pd.Series(1 / len(names), index=names)
+            diff = new.sub(w, fill_value=0)
+            cost = diff.clip(lower=0).sum() * BUY_COST_BPS / 1e4 + (-diff.clip(upper=0)).sum() * SELL_COST_BPS / 1e4
+            w = new
+        r = ret_next.loc[d, w.index].fillna(0.0)
+        g = float((w * r).sum()); out[d] = g - cost
+        w = w * (1 + r) / (1 + g)
+    return pd.Series(out)
 
 
-def write_json(p, obj):
-    p.write_text(json.dumps(obj, indent=2, default=str))
+# ---------------------------------------------------------------- live paper portfolio
+def gbp_price(t, px):
+    """Price per share in £ (London quotes are usually in pence)."""
+    try:
+        cur = yf.Ticker(t).fast_info.get("currency") or "GBp"
+    except Exception:  # noqa: BLE001
+        cur = "GBp"
+    return (px / 100 if cur in ("GBp", "GBX") else px), cur
 
 
-def rebalance(state, today, close_today, fx_today, spy_today, picks, model, sector_of, scores):
-    """Sell everything not wanted, buy new picks so each is 1/N of current portfolio value (paper)."""
-    pos = {t: p for t, p in state.get("positions", {}).items()}
-    value = state.get("cash_gbp", START_CAPITAL) + sum(
-        p["shares"] * close_today.get(t, p["last_price_usd"]) / fx_today for t, p in pos.items())
-    target_gbp = value / len(picks)
-    trades = []
-    old = {t: p["shares"] * close_today.get(t, p["last_price_usd"]) / fx_today for t, p in pos.items()}
-    new_pos = {}
-    for t in picks:
-        px = float(close_today[t])
-        new_pos[t] = {"shares": target_gbp * fx_today / px, "entry_date": pos.get(t, {}).get("entry_date", today),
-                      "entry_price_usd": pos.get(t, {}).get("entry_price_usd", px), "last_price_usd": px,
-                      "sector": sector_of.get(t, "Unknown"), "score": round(float(scores.get(t, np.nan)), 4)}
-    for t in sorted(set(old) | set(new_pos)):
-        before, after = old.get(t, 0.0), (target_gbp if t in new_pos else 0.0)
-        change = after - before
-        if before == 0:
-            action, why = "BUY", "New in the top 10"
-        elif after == 0:
-            action, why = "SELL", "Dropped out of the top 10"
-        elif abs(change) >= max(2, 0.02 * value):
-            action, why = ("RESIZE (top up)" if change > 0 else "RESIZE (trim)"), "Still in, size changed"
+def trade(state, today, sells, buys, prices):
+    """Paper trades: sell `sells` fully, then buy `buys` {ticker: £amount}. Costs come out of cash."""
+    pos, log_rows = state["positions"], []
+    for t in sells:
+        p = pos.pop(t)
+        proceeds = p["value_gbp"]
+        cost = proceeds * SELL_COST_BPS / 1e4
+        state["cash_gbp"] += proceeds - cost
+        log_rows.append({"date": today, "ticker": t, "action": "SELL", "change_gbp": -round(proceeds, 2), "cost_gbp": round(cost, 3)})
+    for t, amount in buys.items():
+        cost = amount * BUY_COST_BPS / 1e4
+        state["cash_gbp"] -= amount + cost
+        px = float(prices[t])
+        old = pos.get(t)
+        if old:
+            old["value_gbp"] += amount
         else:
-            action, why = "KEEP", "Still in the top 10"
-        trades.append({"date": today, "ticker": t, "action": action, "why": why,
-                       "before_gbp": round(before, 2), "after_gbp": round(after, 2), "change_gbp": round(change, 2)})
-    cost = sum(abs(x["change_gbp"]) for x in trades) * COST_BPS / 10_000
-    state.update(positions=new_pos, cash_gbp=-cost, last_rebalance=today, model=model)
-    if "spy_units" not in state:  # benchmark: £100 in an S&P 500 tracker on day one
-        state.update(spy_units=START_CAPITAL * fx_today / spy_today, start_date=today)
-    order = {"SELL": 0, "BUY": 1, "RESIZE (top up)": 2, "RESIZE (trim)": 2, "KEEP": 3}
-    return sorted(trades, key=lambda x: (order[x["action"]], x["ticker"]))
+            gbp, cur = gbp_price(t, px)
+            pos[t] = {"value_gbp": amount, "last_px": px, "entry_px": px, "entry_date": today,
+                      "currency": cur, "px_gbp": gbp}
+        log_rows.append({"date": today, "ticker": t, "action": "BUY" if not old else "TOP UP",
+                         "change_gbp": round(amount, 2), "cost_gbp": round(cost, 3)})
+    return log_rows
 
 
-# ---------------------------------------------------------------- main
 def main():
     DATA.mkdir(exist_ok=True); DOCS.mkdir(exist_ok=True)
-    state = read_json(DATA / "state.json", {})
-    dates, spy, fx = market_data()
+    state_path = DATA / "uk_state.json"
+    state = read_json(state_path, {})
+    dates, bench = market_data()
     today = dates[-1].strftime("%Y-%m-%d")
-    log(f"latest market date: {today}")
+    log(f"latest London market date: {today}")
 
-    days_since = (len(dates[dates > pd.Timestamp(state["last_rebalance"])]) if state.get("last_rebalance") else None)
-    need_rebalance = FORCE_REBALANCE or not state.get("positions") or (days_since is not None and days_since >= H)
-    backtest = read_json(DATA / "backtest.json", None)
-    warnings_list = []
+    mask_all, all_tickers, sector_of = load_membership(dates)
+    raw_c, raw_v = download_all(all_tickers)
+    raw_c = clean_prices(raw_c.reindex(dates))
+    raw_v = raw_v.reindex(dates)
+    have = [t for t in all_tickers if t in raw_c.columns and raw_c[t].notna().sum() > 300]
+    close, volume = raw_c[have].ffill(), raw_v[have].fillna(0)
+    fresh = raw_c[have].notna().astype(int).rolling(5, min_periods=1).max().astype(bool)
+    mask = mask_all.reindex(columns=have).fillna(False).astype(bool) & fresh
+    coverage = ((mask_all[have].sum(axis=1) / mask_all.sum(axis=1)).groupby(dates.year).mean()).round(3)
+    mkt = bench[MARKET]
 
-    if need_rebalance:
-        log("REBALANCE DAY: full download + backtest + retrain")
-        member_rows, all_tickers, sector_of = load_membership()
-        raw_c, raw_v = download_all(all_tickers)
-        raw_c, raw_v = raw_c.reindex(dates), raw_v.reindex(dates)
-        have = [t for t in all_tickers if t in raw_c.columns and raw_c[t].notna().sum() > 300]
-        close, volume = raw_c[have].ffill(), raw_v[have].fillna(0)
-        mask_all = member_rows.reindex(dates, method="ffill").fillna(False).astype(bool)
-        fresh = raw_c[have].notna().astype(int).rolling(5, min_periods=1).max().astype(bool)
-        mask = mask_all.reindex(columns=have).fillna(False).astype(bool) & fresh
-        coverage = ((mask_all[have].sum(axis=1) / mask_all.sum(axis=1)).groupby(dates.year).mean()).round(3)
+    days_since = len(dates[dates > pd.Timestamp(state["last_rebalance"])]) if state.get("last_rebalance") else None
+    monthly = FORCE_REBALANCE or not state.get("positions") or (days_since is not None and days_since >= H)
 
-        rebal_dates = dates[::H]
-        keep_idx = sorted(set(range(0, len(dates), TRAIN_STEP)) | set(range(0, len(dates), H)) | {len(dates) - 1})
-        earn_f = earn_rule = None; earn_cov = None
-        if USE_EARNINGS:
-            earn = fetch_earnings(have, DATA / "earnings.csv.gz", log=log)
-            earn_f, earn_rule, earn_cov = earnings_features(earn, dates, close, spy, mask)
-            log(f"earnings data covers {earn_cov:.0%} of member-days")
-        df = build_dataset(close, volume, spy, mask, sector_of, dates[keep_idx], earn_f, earn_rule)
+    earn_f, earn_cov = None, None
+    if USE_EARNINGS:
+        earn = fetch_earnings(have, DATA / "uk_earnings.csv.gz", log=log)
+        earn_f, _, earn_cov = earnings_features(earn, dates, close, mkt, mask)
+        log(f"earnings data covers {earn_cov:.0%} of member-days")
+
+    backtest = read_json(DATA / "uk_backtest.json", None)
+    if monthly or backtest is None:
+        log("MONTHLY: walk-forward backtest")
+        keep = dates
+        df = build_dataset(close, volume, mkt, mask, sector_of, keep, earn_f)
         log(f"dataset: {len(df):,} rows")
-        preds = walk_forward(df, dates, set(rebal_dates))
-        backtest = run_backtest(preds, spy, fx, sector_of)
+        train_set = set(dates[::TRAIN_STEP])
+        preds, targets = walk_forward(df, dates, train_set)
+        backtest = run_backtest(preds, targets, close, bench, mask, sector_of)
         backtest["coverage"] = {str(k): float(v) for k, v in coverage.items()}
+        backtest["earnings_coverage"] = earn_cov
         backtest["generated"] = today
-        if USE_EARNINGS:
-            pairs = [("Logistic regression", "LR + earnings"), ("LightGBM", "LightGBM + earnings"),
-                     ("Ensemble", "Ensemble + earnings")]
-            backtest["earnings_test"] = {
-                "coverage": round(earn_cov, 3),
-                "pairs": [{"model": a, "sharpe_without": backtest["table"][a]["Sharpe"],
-                           "sharpe_with": backtest["table"][b]["Sharpe"], "auc_without": backtest["auc"][a],
-                           "auc_with": backtest["auc"][b], "cagr_without": backtest["table"][a]["CAGR"],
-                           "cagr_with": backtest["table"][b]["CAGR"]} for a, b in pairs],
-                "drift_rule": backtest["table"]["Earnings drift rule"]}
-        ml_sharpes = {m: backtest["table"][m]["Sharpe"] for m in ML_MODELS}
-        model = max(ml_sharpes, key=ml_sharpes.get) if SIGNAL_MODEL == "auto" else SIGNAL_MODEL
-        backtest["model"] = model
-        write_json(DATA / "backtest.json", backtest)
-
-        lab = df.dropna(subset=["target"])
-        latest = df.index.get_level_values("date").max()
-        tdf = df.xs(latest, level="date").copy()
-        need = ENSEMBLES.get(model, [model])
-        for name, m in make_models().items():
-            if name in need:
-                m.fit(lab[feats_for(name)], lab["target"]); tdf[name] = m.predict_proba(tdf[feats_for(name)])[:, 1]
-        if model in ENSEMBLES:
-            tdf[model] = tdf[need].mean(axis=1)
-        tdf["Momentum rule"] = tdf["ret_60d"]
-        if USE_EARNINGS:
-            tdf["Earnings drift rule"] = tdf["earn_rule"].fillna(-1)
-        picks = pick_with_caps(tdf[model].sort_values(ascending=False).index, TOP_N, MAX_PER_SECTOR, sector_of)
-        trades = rebalance(state, today, close.loc[dates[-1]], float(fx.iloc[-1]), float(spy.iloc[-1]),
-                           picks, model, sector_of, tdf[model].to_dict())
-        tr_path = DATA / "trades.csv"
-        tr = pd.read_csv(tr_path) if tr_path.exists() else pd.DataFrame()
-        tr = tr[tr.get("date", pd.Series(dtype=str)) != today] if len(tr) else tr
-        pd.concat([tr, pd.DataFrame(trades)], ignore_index=True).to_csv(tr_path, index=False)
-        state["last_trades"] = trades
-        log(f"rebalanced into: {', '.join(picks)}")
+        daily_sharpes = {m: backtest["table"][f"{m} · daily check"]["Sharpe"] for m in ML_MODELS}
+        backtest["model"] = max(daily_sharpes, key=daily_sharpes.get) if SIGNAL_MODEL == "auto" else SIGNAL_MODEL
+        write_json(DATA / "uk_backtest.json", backtest)
     else:
-        log(f"mark-to-market only ({days_since} trading days since last rebalance)")
+        keep = dates[sorted(set(range(0, len(dates), TRAIN_STEP)) | set(range(len(dates) - 2 * SMOOTH_DAYS, len(dates))))]
+        df = build_dataset(close, volume, mkt, mask, sector_of, keep, earn_f)
+    model = backtest["model"]
 
-    # --- mark to market (holdings + SPY + FX only on normal days: fast) ---
-    held = list(state["positions"])
-    try:
-        pc, _ = _download(held, start=(dates[-1] - pd.Timedelta(days=15)).strftime("%Y-%m-%d"))
-        pc = pc.reindex(dates[dates >= dates[-1] - pd.Timedelta(days=15)]).ffill()
-        last_px = pc.iloc[-1]
-    except Exception as e:  # noqa: BLE001
-        last_px = pd.Series(dtype=float); warnings_list.append(f"price download failed: {e}")
-    fx_now, spy_now = float(fx.iloc[-1]), float(spy.iloc[-1])
-    holdings = []
+    # --- score today with the chosen model (trained on all labelled history)
+    lab = df.dropna(subset=["target"])
+    lab = lab[lab.index.get_level_values("date").isin(set(dates[::TRAIN_STEP]))]
+    recent_days = dates[-2 * SMOOTH_DAYS:]
+    rdf = df[df.index.get_level_values("date").isin(recent_days)].copy()
+    for name, m in make_models().items():
+        if name in ENSEMBLES.get(model, [model]):
+            m.fit(lab[feats_for(name)], lab["target"]); rdf[name] = m.predict_proba(rdf[feats_for(name)])[:, 1]
+    rdf = add_derived(rdf)
+    live_now = mask.columns[mask.iloc[-1].values]
+    wide = rdf[model].unstack("ticker")
+    raw_today = wide.iloc[-1].dropna()
+    scores = raw_today[raw_today.index.isin(live_now)].sort_values(ascending=False)          # monthly re-pick
+    smooth = wide.ewm(span=SMOOTH_DAYS, min_periods=1).mean().iloc[-1].dropna()
+    smooth = smooth[smooth.index.isin(scores.index)].sort_values(ascending=False)          # daily check
+    prices_today = close.iloc[-1]
+
+    # --- mark to market
+    if state.get("positions"):
+        for t, p in state["positions"].items():
+            px = float(prices_today.get(t, np.nan))
+            if np.isfinite(px) and p["last_px"]:
+                p["value_gbp"] *= px / p["last_px"]; p["last_px"] = px
+    state.setdefault("cash_gbp", START_CAPITAL); state.setdefault("positions", {})
+    if "bench_units" not in state:
+        state["bench_units"] = {k: START_CAPITAL / float(bench[v].iloc[-1]) for k, v in BENCHMARKS.items()}
+        state["start_date"] = today
+
+    trades = []
+    if monthly:
+        value = state["cash_gbp"] + sum(p["value_gbp"] for p in state["positions"].values())
+        picks = pick_with_caps(scores.index, TOP_N, MAX_PER_SECTOR, sector_of)
+        target_each = value / len(picks) / (1 + BUY_COST_BPS / 1e4)
+        sells = [t for t in state["positions"] if t not in picks]
+        trades += trade(state, today, sells, {}, prices_today)
+        buys = {}
+        for t in picks:
+            have_v = state["positions"].get(t, {}).get("value_gbp", 0.0)
+            gap = target_each - have_v
+            if gap > max(2.0, 0.02 * value):
+                buys[t] = gap
+            elif gap < -max(2.0, 0.02 * value):                      # trim
+                state["positions"][t]["value_gbp"] += gap
+                state["cash_gbp"] += -gap * (1 - SELL_COST_BPS / 1e4)
+                trades.append({"date": today, "ticker": t, "action": "TRIM", "change_gbp": round(gap, 2),
+                               "cost_gbp": round(-gap * SELL_COST_BPS / 1e4, 3)})
+        trades += trade(state, today, [], buys, prices_today)
+        state["last_rebalance"] = today
+        state["model"] = model
+        log(f"monthly re-pick: {', '.join(picks)}")
+    else:
+        w = pd.Series({t: p["value_gbp"] for t, p in state["positions"].items()})
+        swaps, _ = daily_swaps(w, smooth, sector_of)
+        for old, new in swaps:
+            amount = state["positions"][old]["value_gbp"] * (1 - SELL_COST_BPS / 1e4) / (1 + BUY_COST_BPS / 1e4)
+            trades += trade(state, today, [old], {new: amount}, prices_today)
+        log(f"daily check: {len(swaps)} swap(s) {swaps}")
+
+    ranks = smooth.rank(ascending=False)
     for t, p in state["positions"].items():
-        px = float(last_px.get(t, np.nan))
-        if np.isnan(px):
-            px = p["last_price_usd"]; warnings_list.append(f"no fresh price for {t}; using last known")
-        p["last_price_usd"] = px
-        holdings.append({"ticker": t, "sector": p["sector"], "shares": round(p["shares"], 6), "price_usd": round(px, 2),
-                         "value_gbp": round(p["shares"] * px / fx_now, 2), "entry_date": p["entry_date"],
-                         "return_since_entry": round(px / p["entry_price_usd"] - 1, 4), "score": p.get("score")})
-    value = sum(h["value_gbp"] for h in holdings) + state.get("cash_gbp", 0)
-    sp_value = state["spy_units"] * spy_now / fx_now
-    nav_path = DATA / "nav.csv"
-    nav = pd.read_csv(nav_path) if nav_path.exists() else pd.DataFrame(columns=["date", "portfolio_gbp", "sp500_gbp", "gbpusd"])
-    nav = nav[nav["date"] != today]
-    nav = pd.concat([nav, pd.DataFrame([{"date": today, "portfolio_gbp": round(value, 4), "sp500_gbp": round(sp_value, 4),
-                                         "gbpusd": round(fx_now, 5)}])], ignore_index=True).sort_values("date")
+        p["rank_today"] = int(ranks.get(t, 999))
+        p["sector"] = sector_of.get(t, "Unknown")
+    if trades:
+        tp = DATA / "uk_trades.csv"
+        old = pd.read_csv(tp) if tp.exists() else pd.DataFrame()
+        pd.concat([old, pd.DataFrame(trades)], ignore_index=True).to_csv(tp, index=False)
+        state["last_trades"] = trades
+        state["last_trade_date"] = today
+
+    value = state["cash_gbp"] + sum(p["value_gbp"] for p in state["positions"].values())
+    bvals = {k: state["bench_units"][k] * float(bench[v].iloc[-1]) for k, v in BENCHMARKS.items()}
+    nav_path = DATA / "uk_nav.csv"
+    nav = pd.read_csv(nav_path) if nav_path.exists() else pd.DataFrame()
+    row = {"date": today, "portfolio_gbp": round(value, 4), **{k: round(v, 4) for k, v in bvals.items()}}
+    nav = pd.concat([nav[nav["date"] != today] if len(nav) else nav, pd.DataFrame([row])], ignore_index=True).sort_values("date")
     nav.to_csv(nav_path, index=False)
-    write_json(DATA / "state.json", state)
+    write_json(state_path, state)
 
     prev = nav.iloc[-2] if len(nav) > 1 else None
-    remaining = H - len(dates[dates > pd.Timestamp(state["last_rebalance"])])
-    bt = backtest or {}
-    table = bt.get("table", {})
-    model = state.get("model")
+    table = backtest["table"]
+    key = f"{model} · daily check"
     results = {
-        "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
-        "market_date": today, "gbpusd": round(fx_now, 4), "model": model,
-        "paper": {"start_date": state["start_date"], "start_value_gbp": START_CAPITAL,
-                  "value_gbp": round(value, 2), "sp500_value_gbp": round(sp_value, 2),
-                  "return_since_start": round(value / START_CAPITAL - 1, 4),
-                  "sp500_return_since_start": round(sp_value / START_CAPITAL - 1, 4),
-                  "day_change": round(value / prev["portfolio_gbp"] - 1, 4) if prev is not None else None,
-                  "sp500_day_change": round(sp_value / prev["sp500_gbp"] - 1, 4) if prev is not None else None},
-        "holdings": sorted(holdings, key=lambda h: -h["value_gbp"]),
-        "last_rebalance": {"date": state["last_rebalance"], "trades": state.get("last_trades", [])},
-        "next_rebalance_in_trading_days": max(remaining, 0),
-        "rebalanced_today": bool(need_rebalance),
-        "backtest": {"generated": bt.get("generated"), "period": bt.get("period"), "auc": bt.get("auc"),
-                     "table": table, "coverage": bt.get("coverage"), "earnings_test": bt.get("earnings_test")},
-        "verdict": ({"model_sharpe": table[model]["Sharpe"], "equal_weight_sharpe": table["Equal-weight (all)"]["Sharpe"],
-                     "sp500_sharpe": table["S&P 500 tracker (£)"]["Sharpe"],
-                     "beats_equal_weight": table[model]["Sharpe"] > table["Equal-weight (all)"]["Sharpe"],
-                     "beats_sp500": table[model]["Sharpe"] > table["S&P 500 tracker (£)"]["Sharpe"]} if model in table else None),
-        "warnings": warnings_list,
+        "market": "UK (FTSE 350)", "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
+        "market_date": today, "model": model, "buffer_rank": BUFFER_RANK,
+        "paper": {"start_date": state["start_date"], "start_value_gbp": START_CAPITAL, "value_gbp": round(value, 2),
+                  "cash_gbp": round(state["cash_gbp"], 2), "return_since_start": round(value / START_CAPITAL - 1, 4),
+                  "benchmarks": {k: {"value_gbp": round(v, 2), "return_since_start": round(v / START_CAPITAL - 1, 4)}
+                                 for k, v in bvals.items()},
+                  "day_change": round(value / prev["portfolio_gbp"] - 1, 4) if prev is not None else None},
+        "holdings": sorted([{"ticker": t, "sector": p["sector"], "value_gbp": round(p["value_gbp"], 2),
+                             "rank_today": p["rank_today"], "return_since_entry": round(p["last_px"] / p["entry_px"] - 1, 4),
+                             "entry_date": p["entry_date"], "price_gbp": round(p.get("px_gbp", 0) * p["last_px"] / p["entry_px"], 4),
+                             "shares": round(p["value_gbp"] / (p.get("px_gbp") * p["last_px"] / p["entry_px"]), 4) if p.get("px_gbp") else None}
+                            for t, p in state["positions"].items()], key=lambda h: h["rank_today"]),
+        "watchlist": [{"ticker": t, "rank": int(ranks[t]), "sector": sector_of.get(t, "Unknown"), "score": round(float(smooth[t]), 4)}
+                      for t in smooth.index[:15]],
+        "smooth_days": SMOOTH_DAYS, "max_swaps_per_day": MAX_SWAPS_PER_DAY,
+        "today": {"type": "monthly re-pick" if monthly else "daily check", "trades": trades},
+        "last_trades": {"date": state.get("last_trade_date"), "trades": state.get("last_trades", [])},
+        "last_rebalance": state["last_rebalance"],
+        "next_rebalance_in_trading_days": max(H - len(dates[dates > pd.Timestamp(state["last_rebalance"])]), 0),
+        "backtest": {k: backtest.get(k) for k in ("generated", "period", "auc", "table", "coverage", "earnings_coverage",
+                                                    "daily_vs_monthly")},
+        "verdict": {"model_sharpe": table[key]["Sharpe"],
+                    "ftse100_sharpe": table["FTSE 100 tracker"]["Sharpe"], "ftse250_sharpe": table["FTSE 250 tracker"]["Sharpe"],
+                    "equal_weight_sharpe": table["Equal-weight (all)"]["Sharpe"],
+                    "beats_ftse100": table[key]["Sharpe"] > table["FTSE 100 tracker"]["Sharpe"],
+                    "beats_ftse250": table[key]["Sharpe"] > table["FTSE 250 tracker"]["Sharpe"]},
+        "costs": {"buy_bps": BUY_COST_BPS, "sell_bps": SELL_COST_BPS, "note": "0.5% stamp duty + spread on UK buys"},
         "disclaimer": "Paper trading / research only. Not financial advice.",
     }
     write_json(DATA / "results.json", results)
-    write_json(DOCS / "results.json", results)   # also published on the web page for Claude/phone
+    write_json(DOCS / "results.json", results)
     from dashboard import build_dashboard
-    (DOCS / "index.html").write_text(build_dashboard(results, bt, nav), encoding="utf-8")
+    (DOCS / "index.html").write_text(build_dashboard(results, backtest, nav), encoding="utf-8")
     (DOCS / ".nojekyll").write_text("")
-    log(f"done: paper £{value:.2f} vs S&P £{sp_value:.2f}")
+    log(f"done: paper £{value:.2f} | " + ", ".join(f"{k} £{v:.2f}" for k, v in bvals.items()))
 
 
 if __name__ == "__main__":

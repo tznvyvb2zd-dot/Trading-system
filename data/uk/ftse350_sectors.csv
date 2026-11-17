@@ -1,0 +1,351 @@
+ticker,sector
+III.L,Investment Banking and Brokerage Services
+ABDN.L,Investment Banking and Brokerage Services
+ADM.L,Non-life Insurance
+AAF.L,Telecommunications Service Providers
+ALW.L,Closed End Investments
+AAL.L,Industrial Metals and Mining
+ANTO.L,Industrial Metals and Mining
+ABF.L,Food Producers
+AZN.L,"Pharmaceuticals, Biotechnology and Marijuana Producers"
+AUTO.L,Software and Computer Services
+AV.L,Life Insurance
+BAB.L,Aerospace and Defense
+BA.L,Aerospace and Defense
+BBY.L,Construction and Materials
+BARC.L,Banks
+BTRW.L,Household Goods and Home Construction
+BP.L,Non-Renewable Energy
+BATS.L,Tobacco
+BLND.L,Real Estate Investment Trusts
+BT-A.L,Telecommunications Service Providers
+BNZL.L,General Industrials
+BRBY.L,Personal Goods
+CNA.L,"Gas, Water and Multi-utilities"
+CCEP.L,Beverages
+CCH.L,Beverages
+CPG.L,Consumer Services
+CCC.L,Software and Computer Services
+CTEC.L,Medical Equipment and Services
+CRDA.L,Chemicals
+DCC.L,Industrial Support Services
+DGE.L,Beverages
+DPLM.L,Industrial Support Services
+EZJ.L,Travel and Leisure
+EDV.L,Precious Metals and Mining
+EXPN.L,Industrial Support Services
+FCIT.L,Closed End Investments
+FRES.L,Precious Metals and Mining
+GAW.L,Leisure Goods
+GLEN.L,Industrial Metals and Mining
+GSK.L,"Pharmaceuticals, Biotechnology and Marijuana Producers"
+HLN.L,"Pharmaceuticals, Biotechnology and Marijuana Producers"
+HLMA.L,Electronic and Electrical Equipment
+HSX.L,Non-life Insurance
+HWDN.L,Retailers
+HSBA.L,Banks
+ICG.L,Investment Banking and Brokerage Services
+IGG.L,Investment Banking and Brokerage Services
+IHG.L,Travel and Leisure
+IMI.L,Electronic and Electrical Equipment
+IMB.L,Tobacco
+INF.L,Media
+IAG.L,Travel and Leisure
+ITRK.L,Industrial Support Services
+INVP.L,Banks
+ITH.L,Non-Renewable Energy
+JD.L,Retailers
+BGEO.L,Banks
+KGF.L,Retailers
+LAND.L,Real Estate Investment Trusts
+LGEN.L,Life Insurance
+LLOY.L,Banks
+LMP.L,Real Estate Investment Trusts
+LSEG.L,Finance and Credit Services
+MNG.L,Investment Banking and Brokerage Services
+MKS.L,"Personal Care, Drug and Grocery Stores"
+MRO.L,Aerospace and Defense
+MTLN.L,"Gas, Water and Multi-utilities"
+NG.L,"Gas, Water and Multi-utilities"
+NWG.L,Banks
+NXT.L,Retailers
+PSON.L,Media
+PSH.L,Closed End Investments
+PCT.L,Closed End Investments
+PRU.L,Life Insurance
+RKT.L,"Personal Care, Drug and Grocery Stores"
+REL.L,Software and Computer Services
+RTO.L,Industrial Support Services
+RIO.L,Industrial Metals and Mining
+RR.L,Aerospace and Defense
+SGE.L,Software and Computer Services
+SBRY.L,"Personal Care, Drug and Grocery Stores"
+SMT.L,Closed End Investments
+SGRO.L,Real Estate Investment Trusts
+SVT.L,"Gas, Water and Multi-utilities"
+SHEL.L,Non-Renewable Energy
+SMIN.L,General Industrials
+SN.L,Medical Equipment and Services
+SPX.L,Industrial Engineering
+SSE.L,Electricity
+STAN.L,Banks
+SDLF.L,Life Insurance
+STJ.L,Investment Banking and Brokerage Services
+TSCO.L,"Personal Care, Drug and Grocery Stores"
+BBOX.L,Real Estate Investment Trusts
+ULVR.L,"Personal Care, Drug and Grocery Stores"
+UU.L,"Gas, Water and Multi-utilities"
+VOD.L,Telecommunications Service Providers
+WEIR.L,Industrial Engineering
+WTB.L,Travel and Leisure
+WPP.L,Media
+3IN.L,Financial Services
+FOUR.L,Media
+AAS.L,Investment Trusts
+ASL.L,Investment Trusts
+AEP.L,Food Producers
+ALFA.L,Software and Computer Services
+ATT.L,Investment Trusts
+AMRQ.L,Industrial Metals and Mining
+AO.L,Retail
+APN.L,Food Producers
+ASHM.L,Financial Services
+AIE.L,Investment Trusts
+ASC.L,Retailers
+ATYM.L,Industrial Metals and Mining
+ATG.L,Software and Computer Services
+AGT.L,Investment Trusts
+AVON.L,Industrial Goods and Services
+BME.L,Retailers
+BGFD.L,Investment Trusts
+USA.L,Investment Trusts
+BCG.L,Consumer Digital Services
+BNKR.L,Investment Trusts
+BAG.L,Beverages
+AJB.L,Financial Services
+BWY.L,Home Construction
+BKG.L,Household goods & home construction
+BHMG.L,Hedge Funds
+BYG.L,Real Estate Investment Trusts
+BPCR.L,Investment Trusts
+BRGE.L,Investment Trusts
+BRSC.L,Investment Trusts
+BRWM.L,Investment Trusts
+BMY.L,Media
+BOY.L,Industrial Engineering
+BREE.L,Construction & Materials
+BPT.L,Financial Services
+BUT.L,Investment Trusts
+BYIT.L,Aerospace & Defence
+CLDN.L,Investment Trusts
+CGT.L,Investment Trusts
+CWR.L,Alternative Energy
+CHG.L,Aerospace & Defence
+CSN.L,Life Insurance
+CTY.L,Investment Trusts
+CKN.L,Industrial Transportation
+CBG.L,Financial Services
+CMCX.L,Financial Services
+COA.L,Consumer Staples
+CORD.L,Investment Trusts
+COST.L,Engineering and Construction
+CWK.L,Food Producers
+CURY.L,Retailers
+CVSG.L,Health Care
+DLN.L,Real Estate Investment Trusts
+DSCV.L,Support Services
+DOM.L,Travel & Leisure
+DRX.L,Electricity
+DOCS.L,Retailers
+DNLM.L,Retailers
+EDIN.L,Investment Trusts
+EWI.L,Investment Trusts
+ELM.L,Chemicals
+ENOG.L,Oil & Gas Producers
+ENQ.L,Oil & Gas Producers
+ENT.L,Travel & leisure
+ESCT.L,Investment Trusts
+EWG.L,Financial Services
+FCSS.L,Investment Trusts
+FEML.L,Investment Trusts
+FEV.L,Investment Trusts
+FSV.L,Investment Trusts
+FGT.L,Equity Investments
+FGP.L,Travel & Leisure
+FGEN.L,Investment Trusts
+FSG.L,Investment Banking and Brokerage Services
+FRAS.L,Retailers
+FCH.L,Financial Services
+GFRD.L,Construction
+GAMA.L,Telecommunications
+GCP.L,General Financial
+GEN.L,Construction & Materials
+GNS.L,Pharmaceuticals & Biotechnology
+DATA.L,Industrial Goods and Services
+GSCT.L,Investment Trusts
+GDWN.L,General Industrials
+GFTU.L,Support Services
+GRI.L,Real Estate Investment & Services
+GPE.L,Real Estate Investment Trusts
+UKW.L,"Gas, Water & Multiutilities"
+GNC.L,"Food, Beverage and Tobacco"
+GRG.L,Food & Drug Retailers
+HFD.L,Retailers
+HMSO.L,Real Estate Investment Trusts
+HANA.L,Investment Trusts
+HBR.L,Oil & Gas Producers
+HVPE.L,Equity Investments
+HAS.L,Support Services
+HTWS.L,Telecomms
+HFEL.L,Investment Trusts
+HSL.L,Investment Trusts
+HRI.L,Investment Trusts
+HGT.L,Investment Trusts
+HICL.L,Investment Trusts
+HIK.L,Pharmaceuticals and Biotechnology
+HILS.L,Industrial Engineering
+HFG.L,Food Producers
+HOC.L,Basic Resources
+BOWL.L,Travel and leisure
+HTG.L,"Oil, Gas and Coal"
+ICGT.L,Investment Trusts
+INCH.L,Retailers
+IHP.L,Financial Services
+INPP.L,Financial Services
+IWG.L,Support Services
+IAD.L,Investment Trusts
+IPO.L,Financial Services
+ITV.L,Media
+JMAT.L,Chemicals
+JSG.L,Industrial Support Services
+JAM.L,Investment Trusts
+JCH.L,Investment Trusts
+JEMI.L,Investment Trusts
+JMGI.L,Investment Trusts
+JEDT.L,Investment Trusts
+JEGI.L,Investment Trusts
+JGGI.L,Investment Trusts
+JFJ.L,Investment Trusts
+JUP.L,Financial Services
+KNOS.L,Software & Computer Services
+KLR.L,Construction & Materials
+KIE.L,Construction & Materials
+LRE.L,Nonlife Insurance
+LWDB.L,Investment Trusts
+EMG.L,Investment Trusts
+MEGP.L,Leisure Goods
+MRC.L,Collective Investments
+MRCH.L,Investment Trusts
+MNO.L,Industrial Metals and Mining
+MTRO.L,Banks
+PAGE.L,Support Services
+MAB.L,Travel & Leisure
+MTO.L,Support Services
+GROW.L,Financial Services
+MNDI.L,Containers & packaging
+MNKS.L,Investment Trusts
+MONY.L,Media
+MOON.L,Retailers
+MGAM.L,Electronic & Electrical Equipment
+MGNS.L,Construction & Materials
+MUT.L,Investment Trusts
+MYI.L,Investment Trusts
+NCC.L,Software and Computer Services
+NBPE.L,Collective Investments
+N91.L,Financial Services
+NAIT.L,Investment Trusts
+NAS.L,Investment Trusts
+OCI.L,Investment Trusts
+OCDO.L,Food & drug retailers
+OSB.L,Banks
+OXB.L,Pharmaceuticals and Biotechnology
+OXIG.L,Electronic & Electrical Equipment
+ONT.L,Health Care
+PHI.L,Investment Trusts
+PAF.L,Precious Metals and Mining
+PINT.L,Investment Trusts
+PIN.L,Equity Investments
+PAG.L,Financial Services
+PEY.L,Investment Trusts
+PPET.L,Financial Services
+PNN.L,"Gas, Water & Multiutilities"
+PSN.L,Household goods & home construction
+PNL.L,Investment Trusts
+PETS.L,Retailers
+PTEC.L,Software & Computer Services
+PLUS.L,Financial Services
+PCGH.L,Investment Trusts
+POLN.L,Financial Services
+PPH.L,Travel and Leisure
+PFD.L,Food & Drug Retailers
+PHP.L,Real Estate Investment Trusts
+PRN.L,Food and drink
+QQ.L,Aerospace & Defence
+QLT.L,Financial Services
+RNK.L,Travel and Leisure
+RPI.L,Technology
+RAT.L,Financial Services
+RSW.L,Electronic & Electrical Equipment
+RHIM.L,Support Services
+RMV.L,Media
+RCP.L,Investment Trusts
+ROSE.L,Industrial Goods and Services
+ROR.L,Industrial Engineering
+RS1.L,Industrials
+RTW.L,Investment Trusts
+RICA.L,Investment Trusts
+SAFE.L,Real Estate Investment Trusts
+SAGA.L,Travel and Leisure
+SVS.L,Real Estate Investment & Services
+MNTN.L,Investment Trusts
+ATR.L,Investment Trusts
+SDP.L,Investment Trusts
+SOI.L,Financial Services
+SAIN.L,Investment Trusts
+SEIT.L,Energy
+SEQI.L,Financial Services
+SSIT.L,Investment Trusts
+SRP.L,Support Services
+SHC.L,Real Estate Investment Trusts
+SHAW.L,Banking
+SRE.L,Real Estate
+SCT.L,Software & Computer Services
+SPI.L,Health Care Equipment & Services
+SSPG.L,Retailers
+SUPR.L,Real Estate Investment Trusts
+SYNC.L,Pharmaceuticals & Biotechnology
+THRL.L,Real Estate Investment Trusts
+TATE.L,Food Producers
+TW.L,Household goods & home construction
+TBCG.L,Banks
+TEP.L,Telecomms
+TMPL.L,Collective Investments
+TEM.L,Investment Trusts
+TRIG.L,Investment Trusts
+THG.L,Personal Products
+TCAP.L,Support Services
+TRN.L,Industrial Transportation
+TPK.L,Support Services
+TRY.L,Investment Trusts
+TRST.L,Technology
+TFIF.L,Investment Trusts
+UTG.L,Real estate investment trusts
+UEM.L,Investment Trusts
+VSVS.L,General Industrials
+VCT.L,Chemicals
+VEIL.L,General Financial
+VOF.L,General Financial
+VTY.L,Home Construction
+VLX.L,Industrial Goods and Services
+FAN.L,Construction & Materials
+WOSG.L,Personal Goods
+JDW.L,Travel & Leisure
+SMWH.L,Retailers
+WIX.L,Retailers
+WIZZ.L,Travel & Leisure
+WKP.L,Real Estate Investment Trusts
+WWH.L,Investment Trusts
+XPP.L,Industrial Goods and Services
+XPS.L,Financial Services
+YNGA.L,Travel and Leisure
+ZIG.L,Support Services

@@ -35,6 +35,7 @@ jobs:
       - name: Run trading system
         env:
           FORCE_REBALANCE: ${{ inputs.force_rebalance }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python src/trading_system.py
 
       - name: Save results
@@ -43,4 +44,4 @@ jobs:
           git config user.email "trading-bot@users.noreply.github.com"
           git add data docs
           git diff --cached --quiet || git commit -m "Daily run $(date -u +%F)"
-          git push
+          git pull --rebase -q origin main && git push

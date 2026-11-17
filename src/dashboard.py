@@ -87,11 +87,20 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
     td = results["today"]
     if td["trades"]:
         icon = {"BUY": "🟢 BUY", "SELL": "🔴 SELL", "TOP UP": "🔵 TOP UP", "TRIM": "🔵 TRIM"}
-        today_html = _table(td["trades"], [("Stock", lambda t: t["ticker"]), ("Action", lambda t: icon.get(t["action"], t["action"])),
-                                           ("Amount", lambda t: f"£{t['change_gbp']:+.2f}"), ("Cost", lambda t: f"£{t['cost_gbp']:.2f}")])
+        today_html = _table(td["trades"], [("Stock", lambda t: t["ticker"].replace(".L", "")),
+                                           ("Action", lambda t: icon.get(t["action"], t["action"])),
+                                           ("Amount", lambda t: f"£{t['change_gbp']:+.2f}"), ("Cost", lambda t: f"£{t['cost_gbp']:.2f}"),
+                                           ("Why", lambda t: t.get("why", ""))])
     else:
         today_html = (f"<p class='muted'>✅ Daily check: all holdings are still in the top {buffer}, so <b>no trades today</b>. "
                       "Nothing to do.</p>")
+    da = td.get("drop_alerts") or []
+    if da:
+        today_html += ("<p class='muted' style='margin-top:10px'><b>⚠️ Sudden drops today</b> (8%+ in a day or 15%+ since bought). "
+                       f"SELL only if the model also ranks it below {buffer}:</p>" + _table(da, [
+                           ("Stock", lambda a: a["ticker"].replace(".L", "")), ("Today", lambda a: _pct(a["day"])),
+                           ("Since bought", lambda a: _pct(a["since_entry"])), ("Model rank", lambda a: a["raw_rank"]),
+                           ("Decision", lambda a: "🔴 SELL" if a["sell"] else "🟡 HOLD")]))
 
     holdings = _table(results["holdings"], [
         ("Stock", lambda h: h["ticker"].replace(".L", "")), ("Rank today", lambda h: _rank_badge(h["rank_today"], buffer)),
@@ -121,6 +130,7 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
         bt_html += ("<h2>🔁 Does the daily check help?</h2><div class='card'>" + _table(dvm, [
             ("Model", lambda r: r["model"]), ("Sharpe monthly", lambda r: f"{r['sharpe_monthly']:.2f}"),
             ("Sharpe daily check", lambda r: f"{r['sharpe_daily']:.2f}"),
+            ("…without drop rule", lambda r: f"{r['sharpe_daily_no_drop_rule']:.2f}" if "sharpe_daily_no_drop_rule" in r else "next re-pick"),
             ("CAGR monthly → daily", lambda r: f"{r['cagr_monthly']:.1%} → {r['cagr_daily']:.1%}")]) +
             f"<p class='muted'>Daily check = sell a holding if its 10-day smoothed rank falls below {buffer} (max 2 swaps a day) and swap in the best replacement. "
             f"It improved Sharpe for {better} of {len(dvm)} strategies, after 0.5% stamp duty + spread on every buy.</p></div>")
@@ -233,7 +243,7 @@ h1{font-size:22px;margin:0 0 2px}h2{font-size:17px;margin:26px 0 8px}
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script><style>{css}</style></head><body><div class="wrap">
 <h1>🇬🇧 UK Trading System · FTSE 350</h1>
 <div class="muted">Prices to {escape(results['market_date'])} · updated {escape(results['generated_at_utc'])} UTC ·
-£100 paper portfolio · full re-pick monthly + daily check (sell if 10-day smoothed rank &gt; {buffer}, max 2 swaps/day) · costs include 0.5% stamp duty on buys</div>
+£100 paper portfolio · full re-pick monthly + daily check (sell if 10-day smoothed rank &gt; {buffer}, max 2 swaps/day; sudden drops sold if the model agrees) · 📲 phone alerts via ntfy · costs include 0.5% stamp duty on buys</div>
 <div class="kpis">{kpis}</div>{verdict}
 <h2>📅 Today ({escape(td['type'])})</h2><div class="card">{today_html}</div>
 <h2>🧮 Your portfolio: how much to buy</h2>{calc_html}

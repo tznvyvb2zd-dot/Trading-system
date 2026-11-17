@@ -26,6 +26,8 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt requests
       - run: python src/${{ inputs.script }}
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
       - name: Save
         run: |
           git config user.name "trading-bot"

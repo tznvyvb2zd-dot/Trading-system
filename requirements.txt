@@ -4,3 +4,4 @@ numpy>=1.26
 scikit-learn>=1.4
 lightgbm>=4.3
 plotly>=5.22
+requests>=2.31

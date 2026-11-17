@@ -150,6 +150,43 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
                     f"AUC (0.50 = coin flip): {escape(auc)}. Price data covers {cov_txt} of FTSE 350 members"
                     + (f"; earnings data covers {ec:.0%} of stock-days" if ec is not None else "") + ".</p>")
 
+    # --- "Your portfolio" calculator (runs in the browser)
+    import json as _json
+    tot = sum(h["value_gbp"] for h in results["holdings"]) or 1
+    calc_data = {
+        "holdings": [{"t": h["ticker"].replace(".L", ""), "s": h["sector"], "w": h["value_gbp"] / tot,
+                      "px": h.get("price_gbp") or None, "r": h["rank_today"]} for h in results["holdings"]],
+        "trades": [{"t": t["ticker"].replace(".L", ""), "a": t["action"], "c": t["change_gbp"]} for t in td["trades"]],
+        "paper": p["value_gbp"], "buy_bps": results["costs"]["buy_bps"], "type": td["type"],
+    }
+    calc_json = _json.dumps(calc_data).replace("</", "<\\/")
+    calc_html = f"""<div class='card'><label class='calc'>My amount to invest: <span class='pfx'>£</span>
+<input id='amt' type='number' inputmode='decimal' min='1' step='1' value='100'></label>
+<div id='calcSummary' class='muted'></div><div id='calcTable'></div>
+<p class='muted'>Split = the system's current holdings, scaled to your amount. Buy with <b>value orders</b> on Trading 212
+(e.g. "buy £24.85 of ROR"); shares are approximate (prices move). Each buy pays ~0.5% stamp duty + spread, already allowed for.
+Your amount is saved on this device only.</p><div id='calcTrades'></div></div>
+<script type='application/json' id='calcData'>{calc_json}</script>"""
+    calc_js = """<script>(function(){
+const D=JSON.parse(document.getElementById('calcData').textContent);
+const inp=document.getElementById('amt');
+const gbp=x=>'£'+x.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+try{const v=localStorage.getItem('tsAmount');if(v)inp.value=v;}catch(e){}
+function draw(){
+  let amt=parseFloat(inp.value); if(!(amt>0)) amt=0;
+  try{localStorage.setItem('tsAmount',String(amt||''));}catch(e){}
+  const k=1+D.buy_bps/1e4, budget=amt/k;
+  let rows=D.holdings.map(h=>{const v=budget*h.w;return `<tr><td>${esc(h.t)}</td><td>${gbp(v)}</td><td>${h.px?(v/h.px).toFixed(4):'-'}</td><td>${h.px?gbp(h.px):'-'}</td><td>${esc(h.s)}</td></tr>`;}).join('');
+  const small=D.holdings.some(h=>budget*h.w<1);
+  document.getElementById('calcTable').innerHTML=`<div class='tw'><table class='tbl'><thead><tr><th>Stock</th><th>Invest</th><th>≈ Shares</th><th>Price</th><th>Sector</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  document.getElementById('calcSummary').innerHTML=amt?`Invest <b>${gbp(budget)}</b> across ${D.holdings.length} stocks · about <b>${gbp(amt-budget)}</b> goes on stamp duty + spread`+(small?` · <b>⚠️ some amounts are under £1</b>, Trading 212's minimum order`:''):'Enter an amount above.';
+  const f=D.paper?budget/D.paper:0;
+  document.getElementById('calcTrades').innerHTML=D.trades.length&&amt?`<p class='muted' style='margin-top:10px'><b>Today's trades at your size (${esc(D.type)}):</b></p><div class='tw'><table class='tbl'><thead><tr><th>Stock</th><th>Action</th><th>Amount</th></tr></thead><tbody>${D.trades.map(t=>`<tr><td>${esc(t.t)}</td><td>${esc(t.a)}</td><td>${gbp(t.c*f)}</td></tr>`).join('')}</tbody></table></div>`:'';
+}
+inp.addEventListener('input',draw); draw();
+})();</script>"""
+
     kpi = lambda label, value, sub="", cls="": (f"<div class='kpi {cls}'><div class='kl'>{escape(label)}</div>"
                                                f"<div class='kv'>{escape(value)}</div><div class='ks'>{escape(sub)}</div></div>")
     kpis = "".join([
@@ -186,6 +223,9 @@ h1{font-size:22px;margin:0 0 2px}h2{font-size:17px;margin:26px 0 8px}
 .note{border-radius:12px;padding:11px 13px;font-size:13px;margin-top:12px;border:1px solid}
 .note.pos{background:#eef8ee;border-color:#bfe3bf}.note.neg{background:#fff4f2;border-color:#f3c9c2}
 .foot{margin-top:28px;font-size:12px;color:#52514e}
+.calc{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;margin:4px 0 8px;flex-wrap:wrap}
+.calc .pfx{font-size:20px}
+.calc input{font-size:20px;font-weight:650;width:9em;padding:8px 10px;border:1px solid #c9c7bf;border-radius:10px;background:#fff}
 """
     return f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
@@ -196,10 +236,11 @@ h1{font-size:22px;margin:0 0 2px}h2{font-size:17px;margin:26px 0 8px}
 £100 paper portfolio · full re-pick monthly + daily check (sell if 10-day smoothed rank &gt; {buffer}, max 2 swaps/day) · costs include 0.5% stamp duty on buys</div>
 <div class="kpis">{kpis}</div>{verdict}
 <h2>📅 Today ({escape(td['type'])})</h2><div class="card">{today_html}</div>
+<h2>🧮 Your portfolio: how much to buy</h2>{calc_html}
 <h2>📈 Live paper trading</h2><div class="card">{live_chart}</div>
 <div class="grid2"><div><h2>💼 Holdings (🟢 top 10 · 🟡 top {buffer} · 🔴 sell)</h2><div class="card">{holdings}</div></div>
 <div><h2>👀 Today's top 15 (smoothed)</h2><div class="card">{watch}</div></div></div>
 <h2>📊 Backtest (no hindsight)</h2><p class="muted">Tip: tap names in a chart legend to show or hide lines. Solid = daily check, dotted = monthly only. LR = logistic regression, LGBM = LightGBM, Ens = ensemble, +E = with earnings.</p>{bt_html}
 <div class="foot">⚠️ Paper trading and research only, not financial advice. Backtests overstate real results.
 Machine-readable data: <a href="results.json">results.json</a></div>
-</div></body></html>"""
+</div>{calc_js}</body></html>"""

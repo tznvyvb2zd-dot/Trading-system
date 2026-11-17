@@ -9,7 +9,7 @@ A machine-learning stock-picking system that runs **every weekday** on GitHub Ac
 | When | What |
 |---|---|
 | Every weekday, 22:30 UTC | Updates prices, values the £100 paper portfolio vs an S&P 500 tracker, rebuilds the dashboard |
-| Every ~21 trading days (monthly) | Downloads the **real point-in-time S&P 500** (~830 stocks, incl. ones later removed), re-runs a walk-forward backtest, retrains the best model (logistic regression / LightGBM / ensemble), and rebalances into the top 10 (max 2 per sector) |
+| Every ~21 trading days (monthly) | Downloads the **real point-in-time S&P 500** (~830 stocks, incl. ones later removed), fetches earnings history (EPS surprises), re-runs a walk-forward backtest, retrains the best model (logistic regression / LightGBM / ensemble, each with and without earnings features), and rebalances into the top 10 (max 2 per sector) |
 
 ## Files
 | Path | Contents |
@@ -19,7 +19,8 @@ A machine-learning stock-picking system that runs **every weekday** on GitHub Ac
 | `data/state.json` | Current paper positions |
 | `data/nav.csv` | Daily portfolio value vs S&P 500 (£) |
 | `data/trades.csv` | Every paper trade (BUY / SELL / RESIZE / KEEP) |
-| `data/backtest.json` | Latest backtest results |
+| `data/backtest.json` | Latest backtest results (incl. earnings test) |
+| `data/earnings.csv.gz` | Cached earnings history (refreshed monthly) |
 | `docs/results.json` | Today's summary (machine-readable) |
 
 ## Manual run

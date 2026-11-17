@@ -22,6 +22,8 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+from earnings import EARN_FEATURES, earnings_features, fetch_earnings
+
 warnings.filterwarnings("ignore")
 
 # ---------------------------------------------------------------- settings
@@ -50,8 +52,12 @@ SIGNAL_MODEL = os.environ.get("TS_SIGNAL_MODEL", "auto")   # or a model name
 AS_OF = os.environ.get("AS_OF")                       # testing/backfill: pretend today is this date
 FORCE_REBALANCE = os.environ.get("FORCE_REBALANCE", "").lower() in ("1", "true", "yes")
 
-ML_MODELS = ["Logistic regression", "LightGBM", "Ensemble"]
-SCORES = ML_MODELS + ["Momentum rule"]
+USE_EARNINGS = os.environ.get("TS_EARNINGS", "1") != "0"
+ML_MODELS = ["Logistic regression", "LightGBM", "Ensemble"] + (
+    ["LR + earnings", "LightGBM + earnings", "Ensemble + earnings"] if USE_EARNINGS else [])
+SCORES = ML_MODELS + ["Momentum rule"] + (["Earnings drift rule"] if USE_EARNINGS else [])
+ENSEMBLES = {"Ensemble": ["Logistic regression", "LightGBM"],
+             "Ensemble + earnings": ["LR + earnings", "LightGBM + earnings"]}
 
 
 def log(msg: str) -> None:
@@ -125,7 +131,7 @@ def rsi(prices, n=14):
     return 100 - 100 / (1 + gain / loss)
 
 
-def build_dataset(close, volume, spy, mask, sector_of, keep_dates):
+def build_dataset(close, volume, spy, mask, sector_of, keep_dates, earn_f=None, earn_rule=None):
     cols = close.columns
     r1, mkt_r1 = close.pct_change(fill_method=None), spy.pct_change()
     mkt_ret20, mkt_vol20 = spy.pct_change(20), mkt_r1.rolling(20).std()
@@ -157,10 +163,18 @@ def build_dataset(close, volume, spy, mask, sector_of, keep_dates):
     to_long = lambda w: w.loc[keep_dates].where(km).unstack().swaplevel()
     df = pd.concat({k: to_long(f[k]) for k in FEATURES}, axis=1)
     df = df.replace([np.inf, -np.inf], np.nan).dropna().astype("float32")
+    if earn_f is not None:                                 # earnings features are pre-filled (no NaN)
+        for k in EARN_FEATURES:
+            df[k] = to_long(earn_f[k]).reindex(df.index).fillna(0).astype("float32")
+        df["earn_rule"] = to_long(earn_rule).reindex(df.index).astype("float32")
     df["fwd_ret"] = to_long(fwd).reindex(df.index)
     df["target"] = to_long(target).reindex(df.index)
     df.index.names = ["date", "ticker"]
     return df.sort_index()
+
+
+def feats_for(name):
+    return FEATURES + EARN_FEATURES if "earnings" in name else FEATURES
 
 
 def make_models():
@@ -168,12 +182,14 @@ def make_models():
     from sklearn.linear_model import LogisticRegression
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import StandardScaler
-    return {
-        "Logistic regression": make_pipeline(StandardScaler(), LogisticRegression(C=0.1, max_iter=1000)),
-        "LightGBM": lgb.LGBMClassifier(n_estimators=300, learning_rate=0.03, num_leaves=15, min_child_samples=200,
-                                       subsample=0.8, subsample_freq=1, colsample_bytree=0.8, reg_lambda=1.0,
-                                       random_state=42, verbose=-1),
-    }
+    lr = lambda: make_pipeline(StandardScaler(), LogisticRegression(C=0.1, max_iter=1000))
+    gbm = lambda: lgb.LGBMClassifier(n_estimators=300, learning_rate=0.03, num_leaves=15, min_child_samples=200,
+                                     subsample=0.8, subsample_freq=1, colsample_bytree=0.8, reg_lambda=1.0,
+                                     random_state=42, verbose=-1)
+    models = {"Logistic regression": lr(), "LightGBM": gbm()}
+    if USE_EARNINGS:
+        models.update({"LR + earnings": lr(), "LightGBM + earnings": gbm()})
+    return models
 
 
 def walk_forward(df, dates, rebal_set):
@@ -186,15 +202,19 @@ def walk_forward(df, dates, rebal_set):
         if test.empty:
             continue
         train = lab[lab_d <= dates[start - H - 1]]                 # gap = holding period: no leakage
-        out = test[["fwd_ret", "target", "ret_60d"]].copy()
+        out = test[["fwd_ret", "target", "ret_60d"] + (["earn_rule"] if USE_EARNINGS else [])].copy()
         for name, m in make_models().items():
-            m.fit(train[FEATURES], train["target"])
-            out[name] = m.predict_proba(test[FEATURES])[:, 1]
+            m.fit(train[feats_for(name)], train["target"])
+            out[name] = m.predict_proba(test[feats_for(name)])[:, 1]
         outs.append(out)
         log(f"walk-forward: trained to {dates[start - H - 1].date()}")
     p = pd.concat(outs)
-    p["Ensemble"] = p[["Logistic regression", "LightGBM"]].mean(axis=1)
+    for ens, parts in ENSEMBLES.items():
+        if all(c in p for c in parts):
+            p[ens] = p[parts].mean(axis=1)
     p["Momentum rule"] = p["ret_60d"]
+    if USE_EARNINGS:
+        p["Earnings drift rule"] = p["earn_rule"].fillna(-1)
     return p
 
 
@@ -321,12 +341,27 @@ def main():
 
         rebal_dates = dates[::H]
         keep_idx = sorted(set(range(0, len(dates), TRAIN_STEP)) | set(range(0, len(dates), H)) | {len(dates) - 1})
-        df = build_dataset(close, volume, spy, mask, sector_of, dates[keep_idx])
+        earn_f = earn_rule = None; earn_cov = None
+        if USE_EARNINGS:
+            earn = fetch_earnings(have, DATA / "earnings.csv.gz", log=log)
+            earn_f, earn_rule, earn_cov = earnings_features(earn, dates, close, spy, mask)
+            log(f"earnings data covers {earn_cov:.0%} of member-days")
+        df = build_dataset(close, volume, spy, mask, sector_of, dates[keep_idx], earn_f, earn_rule)
         log(f"dataset: {len(df):,} rows")
         preds = walk_forward(df, dates, set(rebal_dates))
         backtest = run_backtest(preds, spy, fx, sector_of)
         backtest["coverage"] = {str(k): float(v) for k, v in coverage.items()}
         backtest["generated"] = today
+        if USE_EARNINGS:
+            pairs = [("Logistic regression", "LR + earnings"), ("LightGBM", "LightGBM + earnings"),
+                     ("Ensemble", "Ensemble + earnings")]
+            backtest["earnings_test"] = {
+                "coverage": round(earn_cov, 3),
+                "pairs": [{"model": a, "sharpe_without": backtest["table"][a]["Sharpe"],
+                           "sharpe_with": backtest["table"][b]["Sharpe"], "auc_without": backtest["auc"][a],
+                           "auc_with": backtest["auc"][b], "cagr_without": backtest["table"][a]["CAGR"],
+                           "cagr_with": backtest["table"][b]["CAGR"]} for a, b in pairs],
+                "drift_rule": backtest["table"]["Earnings drift rule"]}
         ml_sharpes = {m: backtest["table"][m]["Sharpe"] for m in ML_MODELS}
         model = max(ml_sharpes, key=ml_sharpes.get) if SIGNAL_MODEL == "auto" else SIGNAL_MODEL
         backtest["model"] = model
@@ -335,11 +370,15 @@ def main():
         lab = df.dropna(subset=["target"])
         latest = df.index.get_level_values("date").max()
         tdf = df.xs(latest, level="date").copy()
-        if model in ML_MODELS:
-            for name, m in make_models().items():
-                m.fit(lab[FEATURES], lab["target"]); tdf[name] = m.predict_proba(tdf[FEATURES])[:, 1]
-            tdf["Ensemble"] = tdf[["Logistic regression", "LightGBM"]].mean(axis=1)
+        need = ENSEMBLES.get(model, [model])
+        for name, m in make_models().items():
+            if name in need:
+                m.fit(lab[feats_for(name)], lab["target"]); tdf[name] = m.predict_proba(tdf[feats_for(name)])[:, 1]
+        if model in ENSEMBLES:
+            tdf[model] = tdf[need].mean(axis=1)
         tdf["Momentum rule"] = tdf["ret_60d"]
+        if USE_EARNINGS:
+            tdf["Earnings drift rule"] = tdf["earn_rule"].fillna(-1)
         picks = pick_with_caps(tdf[model].sort_values(ascending=False).index, TOP_N, MAX_PER_SECTOR, sector_of)
         trades = rebalance(state, today, close.loc[dates[-1]], float(fx.iloc[-1]), float(spy.iloc[-1]),
                            picks, model, sector_of, tdf[model].to_dict())
@@ -399,7 +438,7 @@ def main():
         "next_rebalance_in_trading_days": max(remaining, 0),
         "rebalanced_today": bool(need_rebalance),
         "backtest": {"generated": bt.get("generated"), "period": bt.get("period"), "auc": bt.get("auc"),
-                     "table": table, "coverage": bt.get("coverage")},
+                     "table": table, "coverage": bt.get("coverage"), "earnings_test": bt.get("earnings_test")},
         "verdict": ({"model_sharpe": table[model]["Sharpe"], "equal_weight_sharpe": table["Equal-weight (all)"]["Sharpe"],
                      "sp500_sharpe": table["S&P 500 tracker (£)"]["Sharpe"],
                      "beats_equal_weight": table[model]["Sharpe"] > table["Equal-weight (all)"]["Sharpe"],

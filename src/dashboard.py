@@ -7,19 +7,27 @@ import pandas as pd
 import plotly.graph_objects as go
 
 COLORS = {"Logistic regression": "#2a78d6", "LightGBM": "#eb6834", "Ensemble": "#1baf7a",
-          "Momentum rule": "#eda100", "Equal-weight (all)": "#e87ba4", "S&P 500 tracker (£)": "#52514e"}
-DASH = {"S&P 500 tracker (£)": "dash"}
+          "Momentum rule": "#eda100", "Equal-weight (all)": "#e87ba4", "Earnings drift rule": "#008300",
+          "S&P 500 tracker (£)": "#52514e",
+          # "+ earnings" versions share their base model's colour, drawn dotted
+          "LR + earnings": "#2a78d6", "LightGBM + earnings": "#eb6834", "Ensemble + earnings": "#1baf7a"}
+DASH = {"S&P 500 tracker (£)": "dash", "LR + earnings": "dot", "LightGBM + earnings": "dot", "Ensemble + earnings": "dot"}
+TWIN = {"Logistic regression": "LR + earnings", "LightGBM": "LightGBM + earnings", "Ensemble": "Ensemble + earnings"}
+TWIN.update({v: k for k, v in TWIN.items()})
 INK, MUTED, GRID, SURF = "#0b0b0b", "#52514e", "#e6e5e0", "#fcfcfb"
 CONFIG = {"displayModeBar": False, "responsive": True}
 
 
-def _style(fig, title, h=320):
+def _style(fig, title, h=320, two_col_legend=False):
     fig.update_layout(title=dict(text=title, x=0, font=dict(size=15, color=INK)), height=h, template="plotly_white",
                       font=dict(family="system-ui,-apple-system,Segoe UI,sans-serif", color=MUTED, size=12),
                       margin=dict(l=48, r=12, t=48, b=30), hovermode="x unified", paper_bgcolor=SURF,
                       plot_bgcolor=SURF, legend=dict(orientation="h", y=-0.18, font=dict(size=11)))
     fig.update_xaxes(gridcolor=GRID, linecolor=GRID)
     fig.update_yaxes(gridcolor=GRID, linecolor=GRID)
+    if two_col_legend:
+        fig.update_layout(legend=dict(orientation="h", y=-0.1, yanchor="top", entrywidth=0.5,
+                                      entrywidthmode="fraction", font=dict(size=10.5)))
     fig.update_layout(autosize=True)
     return fig.to_html(full_html=False, include_plotlyjs=False, config=CONFIG,
                        default_width="100%", default_height=f"{h}px")
@@ -57,17 +65,21 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
     # --- backtest charts
     bt_html = ""
     if bt and bt.get("growth"):
+        key = [model, TWIN.get(model), "Earnings drift rule", "Equal-weight (all)", "S&P 500 tracker (£)"]
+        key = [k for k in dict.fromkeys(key) if k and k in bt["growth"]]
         g = go.Figure()
         for s, series in bt["growth"].items():
             g.add_trace(go.Scatter(x=list(series), y=list(series.values()), name=s,
+                                   visible=True if s in key else "legendonly",       # tap legend to show others
                                    line=dict(color=COLORS.get(s, "#888"), width=2.5 if s == model else 1.6,
                                              dash=DASH.get(s, "solid")), hovertemplate="£%{y:,.0f}"))
         g.update_yaxes(type="log", tickprefix="£")
-        bt_html += f"<div class='card'>{_style(g, '£100 invested, backtest on the real S&P 500', 360)}</div>"
+        bt_html += f"<div class='card'>{_style(g, '£100 invested · backtest, real S&P 500', 470, two_col_legend=True)}</div>"
         years = sorted({y for s in bt["yearly"].values() for y in s})
-        strat = list(bt["yearly"])
+        strat = key
         short = {"Logistic regression": "LogReg", "LightGBM": "LGBM", "Ensemble": "Ens", "Momentum rule": "Mom",
-                 "Equal-weight (all)": "EqW", "S&P 500 tracker (£)": "S&P"}
+                 "Equal-weight (all)": "EqW", "S&P 500 tracker (£)": "S&P", "LR + earnings": "LR+E",
+                 "LightGBM + earnings": "LGBM+E", "Ensemble + earnings": "Ens+E", "Earnings drift rule": "EarnRule"}
         z = [[bt["yearly"][s].get(y) for s in strat] for y in years]          # years = rows (phone friendly)
         hm = go.Figure(go.Heatmap(z=z, y=years, x=[short.get(s, s) for s in strat], zmid=0, zmin=-0.4, zmax=0.4,
                                   colorscale=[[0, "#e34948"], [0.5, "#f0efec"], [1, "#2a78d6"]],
@@ -81,6 +93,17 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
             ("Strategy", lambda r: r[0]), ("Sharpe", lambda r: f"{r[1]['Sharpe']:.2f}"),
             ("CAGR", lambda r: f"{r[1]['CAGR']:.1%}"), ("Worst fall", lambda r: f"{r[1]['Max drawdown']:.0%}"),
             ("£100 →", lambda r: f"£{r[1]['£100 grew to']:,.0f}")]) + "</div>"
+        et = bt.get("earnings_test")
+        if et:
+            better = sum(pr["sharpe_with"] > pr["sharpe_without"] for pr in et["pairs"])
+            bt_html += ("<h2>🧾 Earnings test: do earnings surprises help?</h2><div class='card'>" + _table(et["pairs"], [
+                ("Model", lambda r: r["model"]), ("Sharpe without", lambda r: f"{r['sharpe_without']:.2f}"),
+                ("Sharpe with", lambda r: f"{r['sharpe_with']:.2f}"),
+                ("AUC without → with", lambda r: f"{r['auc_without']:.3f} → {r['auc_with']:.3f}"),
+                ("CAGR without → with", lambda r: f"{r['cagr_without']:.1%} → {r['cagr_with']:.1%}")]) +
+                f"<p class='muted'>Earnings data covers {et['coverage']:.0%} of stock-days. Adding earnings improved Sharpe for "
+                f"{better} of 3 models. Simple earnings drift rule (buy the strongest reactions to results in the last ~3 months): "
+                f"Sharpe {et['drift_rule']['Sharpe']:.2f}, CAGR {et['drift_rule']['CAGR']:.1%}.</p></div>")
         auc = ", ".join(f"{k} {val:.3f}" for k, val in (bt.get("auc") or {}).items())
         cov = bt.get("coverage") or {}
         cov_txt = f"{min(cov.values()):.0%}–{max(cov.values()):.0%}" if cov else "-"
@@ -147,7 +170,7 @@ h1{font-size:22px;margin:0 0 2px}h2{font-size:17px;margin:26px 0 8px}
 <h2>📈 Live paper trading</h2><div class="card">{live_chart}</div>
 <div class="grid2"><div><h2>💼 Holdings</h2><div class="card">{holdings}</div></div>
 <div><h2>🔁 Last rebalance ({escape(results['last_rebalance']['date'])})</h2><div class="card">{trades}</div></div></div>
-<h2>📊 Backtest (no hindsight)</h2>{bt_html}
+<h2>📊 Backtest (no hindsight)</h2><p class="muted">Tip: tap names in a chart legend to show or hide lines.</p>{bt_html}
 <div class="foot">⚠️ Paper trading and research only, not financial advice. Backtests overstate real results.
 Machine-readable data: <a href="results.json">results.json</a></div>
 </div></body></html>"""

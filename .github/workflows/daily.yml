@@ -1,0 +1,46 @@
+name: Daily trading run
+
+on:
+  schedule:
+    - cron: "30 22 * * 1-5"     # 22:30 UTC Mon-Fri (after the US market closes)
+  workflow_dispatch:             # "Run workflow" button in the Actions tab
+    inputs:
+      force_rebalance:
+        description: "Rebalance today (re-run backtest + new picks)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-run
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Run trading system
+        env:
+          FORCE_REBALANCE: ${{ inputs.force_rebalance }}
+        run: python src/trading_system.py
+
+      - name: Save results
+        run: |
+          git config user.name "trading-bot"
+          git config user.email "trading-bot@users.noreply.github.com"
+          git add data docs
+          git diff --cached --quiet || git commit -m "Daily run $(date -u +%F)"
+          git push

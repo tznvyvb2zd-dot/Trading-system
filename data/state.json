@@ -1,20 +1,20 @@
 {
   "positions": {
-    "WDC": {
-      "shares": 0.04704552534356039,
-      "entry_date": "2026-11-16",
-      "entry_price_usd": 280.92999267578125,
-      "last_price_usd": 280.92999267578125,
-      "sector": "Information Technology",
-      "score": 0.7334
-    },
     "TER": {
       "shares": 0.056992235610382504,
       "entry_date": "2026-11-16",
       "entry_price_usd": 231.89999389648438,
       "last_price_usd": 231.89999389648438,
       "sector": "Information Technology",
-      "score": 0.7322
+      "score": 0.739
+    },
+    "SNDK": {
+      "shares": 0.016334613747786175,
+      "entry_date": "2026-11-16",
+      "entry_price_usd": 809.1099853515625,
+      "last_price_usd": 809.1099853515625,
+      "sector": "Information Technology",
+      "score": 0.7204
     },
     "FIX": {
       "shares": 0.012495743910290997,
@@ -22,7 +22,7 @@
       "entry_price_usd": 1057.6800537109375,
       "last_price_usd": 1057.6800537109375,
       "sector": "Industrials",
-      "score": 0.6813
+      "score": 0.6891
     },
     "FIS": {
       "shares": 0.46701411471725074,
@@ -30,7 +30,7 @@
       "entry_price_usd": 28.299999237060547,
       "last_price_usd": 28.299999237060547,
       "sector": "Financials",
-      "score": 0.6731
+      "score": 0.6452
     },
     "VRT": {
       "shares": 0.07005087835088616,
@@ -38,15 +38,15 @@
       "entry_price_usd": 188.6699981689453,
       "last_price_usd": 188.6699981689453,
       "sector": "Industrials",
-      "score": 0.6439
+      "score": 0.6399
     },
-    "COIN": {
-      "shares": 0.11028454183969257,
+    "HOOD": {
+      "shares": 0.18340965220610844,
       "entry_date": "2026-11-16",
-      "entry_price_usd": 119.83999633789062,
-      "last_price_usd": 119.83999633789062,
+      "entry_price_usd": 72.05999755859375,
+      "last_price_usd": 72.05999755859375,
       "sector": "Financials",
-      "score": 0.6358
+      "score": 0.6316
     },
     "RDDT": {
       "shares": 0.14231181974075174,
@@ -54,42 +54,87 @@
       "entry_price_usd": 92.87000274658203,
       "last_price_usd": 92.87000274658203,
       "sector": "Communication Services",
-      "score": 0.6299
+      "score": 0.6
     },
-    "NRG": {
-      "shares": 0.14061601649731803,
+    "ALB": {
+      "shares": 0.1499149108574172,
       "entry_date": "2026-11-16",
-      "entry_price_usd": 93.98999786376953,
-      "last_price_usd": 93.98999786376953,
-      "sector": "Utilities",
-      "score": 0.6161
+      "entry_price_usd": 88.16000366210938,
+      "last_price_usd": 88.16000366210938,
+      "sector": "Materials",
+      "score": 0.5923
     },
-    "CSGP": {
-      "shares": 0.42306335425820163,
+    "LVS": {
+      "shares": 0.33190605704380693,
       "entry_date": "2026-11-16",
-      "entry_price_usd": 31.239999771118164,
-      "last_price_usd": 31.239999771118164,
-      "sector": "Real Estate",
-      "score": 0.6095
+      "entry_price_usd": 39.81999969482422,
+      "last_price_usd": 39.81999969482422,
+      "sector": "Consumer Discretionary",
+      "score": 0.5832
     },
-    "MKC": {
-      "shares": 0.28042645428955937,
+    "NVR": {
+      "shares": 0.0022813185098274086,
       "entry_date": "2026-11-16",
-      "entry_price_usd": 47.130001068115234,
-      "last_price_usd": 47.130001068115234,
-      "sector": "Consumer Staples",
-      "score": 0.6049
+      "entry_price_usd": 5793.35986328125,
+      "last_price_usd": 5793.35986328125,
+      "sector": "Consumer Discretionary",
+      "score": 0.5793
     }
   },
   "cash_gbp": -0.0,
   "last_rebalance": "2026-11-16",
-  "model": "LightGBM",
+  "model": "LightGBM + earnings",
   "spy_units": 0.17861340458356323,
   "start_date": "2026-11-16",
   "last_trades": [
     {
       "date": "2026-11-16",
       "ticker": "COIN",
+      "action": "SELL",
+      "why": "Dropped out of the top 10",
+      "before_gbp": 10.0,
+      "after_gbp": 0.0,
+      "change_gbp": -10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "CSGP",
+      "action": "SELL",
+      "why": "Dropped out of the top 10",
+      "before_gbp": 10.0,
+      "after_gbp": 0.0,
+      "change_gbp": -10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "MKC",
+      "action": "SELL",
+      "why": "Dropped out of the top 10",
+      "before_gbp": 10.0,
+      "after_gbp": 0.0,
+      "change_gbp": -10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "NRG",
+      "action": "SELL",
+      "why": "Dropped out of the top 10",
+      "before_gbp": 10.0,
+      "after_gbp": 0.0,
+      "change_gbp": -10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "WDC",
+      "action": "SELL",
+      "why": "Dropped out of the top 10",
+      "before_gbp": 10.0,
+      "after_gbp": 0.0,
+      "change_gbp": -10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "ALB",
       "action": "BUY",
       "why": "New in the top 10",
       "before_gbp": 0.0,
@@ -98,7 +143,34 @@
     },
     {
       "date": "2026-11-16",
-      "ticker": "CSGP",
+      "ticker": "HOOD",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "LVS",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "NVR",
+      "action": "BUY",
+      "why": "New in the top 10",
+      "before_gbp": 0.0,
+      "after_gbp": 10.0,
+      "change_gbp": 10.0
+    },
+    {
+      "date": "2026-11-16",
+      "ticker": "SNDK",
       "action": "BUY",
       "why": "New in the top 10",
       "before_gbp": 0.0,
@@ -108,74 +180,47 @@
     {
       "date": "2026-11-16",
       "ticker": "FIS",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
+      "action": "KEEP",
+      "why": "Still in the top 10",
+      "before_gbp": 10.0,
       "after_gbp": 10.0,
-      "change_gbp": 10.0
+      "change_gbp": 0.0
     },
     {
       "date": "2026-11-16",
       "ticker": "FIX",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
+      "action": "KEEP",
+      "why": "Still in the top 10",
+      "before_gbp": 10.0,
       "after_gbp": 10.0,
-      "change_gbp": 10.0
-    },
-    {
-      "date": "2026-11-16",
-      "ticker": "MKC",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
-      "after_gbp": 10.0,
-      "change_gbp": 10.0
-    },
-    {
-      "date": "2026-11-16",
-      "ticker": "NRG",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
-      "after_gbp": 10.0,
-      "change_gbp": 10.0
+      "change_gbp": 0.0
     },
     {
       "date": "2026-11-16",
       "ticker": "RDDT",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
+      "action": "KEEP",
+      "why": "Still in the top 10",
+      "before_gbp": 10.0,
       "after_gbp": 10.0,
-      "change_gbp": 10.0
+      "change_gbp": 0.0
     },
     {
       "date": "2026-11-16",
       "ticker": "TER",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
+      "action": "KEEP",
+      "why": "Still in the top 10",
+      "before_gbp": 10.0,
       "after_gbp": 10.0,
-      "change_gbp": 10.0
+      "change_gbp": 0.0
     },
     {
       "date": "2026-11-16",
       "ticker": "VRT",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
+      "action": "KEEP",
+      "why": "Still in the top 10",
+      "before_gbp": 10.0,
       "after_gbp": 10.0,
-      "change_gbp": 10.0
-    },
-    {
-      "date": "2026-11-16",
-      "ticker": "WDC",
-      "action": "BUY",
-      "why": "New in the top 10",
-      "before_gbp": 0.0,
-      "after_gbp": 10.0,
-      "change_gbp": 10.0
+      "change_gbp": -0.0
     }
   ]
 }

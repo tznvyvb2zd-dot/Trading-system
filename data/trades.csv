@@ -1,11 +1,16 @@
 date,ticker,action,why,before_gbp,after_gbp,change_gbp
-2026-11-16,COIN,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,CSGP,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,FIS,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,FIX,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,MKC,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,NRG,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,RDDT,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,TER,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,VRT,BUY,New in the top 10,0.0,10.0,10.0
-2026-11-16,WDC,BUY,New in the top 10,0.0,10.0,10.0
+2026-11-16,COIN,SELL,Dropped out of the top 10,10.0,0.0,-10.0
+2026-11-16,CSGP,SELL,Dropped out of the top 10,10.0,0.0,-10.0
+2026-11-16,MKC,SELL,Dropped out of the top 10,10.0,0.0,-10.0
+2026-11-16,NRG,SELL,Dropped out of the top 10,10.0,0.0,-10.0
+2026-11-16,WDC,SELL,Dropped out of the top 10,10.0,0.0,-10.0
+2026-11-16,ALB,BUY,New in the top 10,0.0,10.0,10.0
+2026-11-16,HOOD,BUY,New in the top 10,0.0,10.0,10.0
+2026-11-16,LVS,BUY,New in the top 10,0.0,10.0,10.0
+2026-11-16,NVR,BUY,New in the top 10,0.0,10.0,10.0
+2026-11-16,SNDK,BUY,New in the top 10,0.0,10.0,10.0
+2026-11-16,FIS,KEEP,Still in the top 10,10.0,10.0,0.0
+2026-11-16,FIX,KEEP,Still in the top 10,10.0,10.0,0.0
+2026-11-16,RDDT,KEEP,Still in the top 10,10.0,10.0,0.0
+2026-11-16,TER,KEEP,Still in the top 10,10.0,10.0,0.0
+2026-11-16,VRT,KEEP,Still in the top 10,10.0,10.0,-0.0

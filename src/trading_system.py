@@ -449,7 +449,8 @@ def main():
     close, volume = raw_c[have].ffill(), raw_v[have].fillna(0)
     fresh = raw_c[have].notna().astype(int).rolling(5, min_periods=1).max().astype(bool)
     mask = mask_all.reindex(columns=have).fillna(False).astype(bool) & fresh
-    coverage = ((mask_all[have].sum(axis=1) / mask_all.sum(axis=1)).groupby(dates.year).mean()).round(3)
+    # share of the ~350 real FTSE 350 members we have prices for (names we couldn't map / delisted firms count as missing)
+    coverage = ((mask.sum(axis=1) / 350).clip(upper=1).groupby(dates.year).mean()).round(3)
     mkt = bench[MARKET]
 
     days_since = len(dates[dates > pd.Timestamp(state["last_rebalance"])]) if state.get("last_rebalance") else None

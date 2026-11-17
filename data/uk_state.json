@@ -1,0 +1,185 @@
+{
+  "cash_gbp": 0.0,
+  "positions": {
+    "TATE.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 562.4000244140625,
+      "entry_px": 562.4000244140625,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 5.624000244140625,
+      "rank_today": 2,
+      "sector": "Food Producers"
+    },
+    "ROR.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 493.3999938964844,
+      "entry_px": 493.3999938964844,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 4.933999938964844,
+      "rank_today": 1,
+      "sector": "Industrial Engineering"
+    },
+    "PTEC.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 347.79998779296875,
+      "entry_px": 347.79998779296875,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 3.4779998779296877,
+      "rank_today": 12,
+      "sector": "Software & Computer Services"
+    },
+    "CMCX.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 697.0,
+      "entry_px": 697.0,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 6.97,
+      "rank_today": 8,
+      "sector": "Financial Services"
+    },
+    "AAL.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 3559.0,
+      "entry_px": 3559.0,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 35.59,
+      "rank_today": 15,
+      "sector": "Industrial Metals and Mining"
+    },
+    "FEML.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 1154.0,
+      "entry_px": 1154.0,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 11.54,
+      "rank_today": 22,
+      "sector": "Investment Trusts"
+    },
+    "MTO.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 207.8000030517578,
+      "entry_px": 207.8000030517578,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 2.078000030517578,
+      "rank_today": 3,
+      "sector": "Support Services"
+    },
+    "ZIG.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 457.0,
+      "entry_px": 457.0,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 4.57,
+      "rank_today": 11,
+      "sector": "Support Services"
+    },
+    "MNTN.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 2.119999885559082,
+      "entry_px": 2.119999885559082,
+      "entry_date": "2026-11-17",
+      "currency": "USD",
+      "px_gbp": 2.119999885559082,
+      "rank_today": 7,
+      "sector": "Investment Trusts"
+    },
+    "PNN.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 326.79998779296875,
+      "entry_px": 326.79998779296875,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 3.2679998779296877,
+      "rank_today": 32,
+      "sector": "Gas, Water & Multiutilities"
+    }
+  },
+  "bench_units": {
+    "FTSE 100 tracker": 0.09537571009323464,
+    "FTSE 250 tracker": 0.04420866489832007
+  },
+  "start_date": "2026-11-17",
+  "last_rebalance": "2026-11-17",
+  "model": "Ensemble",
+  "last_trades": [
+    {
+      "date": "2026-11-17",
+      "ticker": "TATE.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "ROR.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "PTEC.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "CMCX.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "AAL.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "FEML.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "MTO.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "ZIG.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "MNTN.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "PNN.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06
+    }
+  ],
+  "last_trade_date": "2026-11-17"
+}

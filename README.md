@@ -2,8 +2,8 @@
 
 A machine-learning stock-picking system that runs **every weekday** on GitHub Actions and publishes a **live dashboard**.
 
-- **Dashboard:** `https://tznvyvb2zd-dot.github.io/trading-system/`
-- **Data for Claude / scripts:** `docs/results.json` (also at `.../trading-system/results.json`)
+- **Dashboard:** `https://tznvyvb2zd-dot.github.io/Trading-system/`
+- **Data for Claude / scripts:** `docs/results.json` (also at `.../Trading-system/results.json`)
 
 ## What it does
 | When | What |

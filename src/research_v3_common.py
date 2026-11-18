@@ -49,7 +49,7 @@ def new_features(close, volume, mkt, mask, sector_of):
     return {k: v.replace([np.inf, -np.inf], np.nan) for k, v in f.items()}
 
 
-def load_all():
+def load_all(save_shared=True):
     dates, bench = ts.market_data()
     mask_all, all_tickers, sector_of = ts.load_membership(dates)
     raw_c, raw_v = ts.download_all(all_tickers)
@@ -80,10 +80,11 @@ def load_all():
         "new": base + NEW + EARN_FEATURES,
         "ranked": [f"xr_{c}" for c in stock_level] + sorted(MARKET_LEVEL) + EARN_FEATURES,
     }
-    close.astype("float32").to_pickle(OUT / "close.pkl.gz")
-    mask.to_pickle(OUT / "mask.pkl.gz")
-    bench.astype("float32").to_pickle(OUT / "bench.pkl.gz")
-    pd.Series(sector_of).to_csv(OUT / "sectors.csv")
+    if save_shared:
+        close.astype("float32").to_pickle(OUT / "close.pkl.gz")
+        mask.to_pickle(OUT / "mask.pkl.gz")
+        bench.astype("float32").to_pickle(OUT / "bench.pkl.gz")
+        pd.Series(sector_of).to_csv(OUT / "sectors.csv")
     return df, dates, sets
 
 
@@ -140,9 +141,9 @@ def fit_predict(spec, train, test, feats):
     raise ValueError(spec)
 
 
-def run(specs, tag):
+def run(specs, tag, save_shared=True):
     """specs: {name: (kind, feature_set)}."""
-    df, dates, sets = load_all()
+    df, dates, sets = load_all(save_shared)
     train_set = set(dates[::ts.TRAIN_STEP])
     lab = df.dropna(subset=["target"])
     lab = lab[lab.index.get_level_values("date").isin(train_set)]

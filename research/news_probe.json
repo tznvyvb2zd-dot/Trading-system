@@ -1,0 +1,207 @@
+{
+ "\"Tesco\" timelinetone": {
+  "n_points": 3559,
+  "first": "20170101T000000Z",
+  "last": "20261115T000000Z",
+  "nonzero": 3552,
+  "sample": [
+   {
+    "date": "20170101T000000Z",
+    "value": -0.7822
+   },
+   {
+    "date": "20170102T000000Z",
+    "value": -1.0777
+   },
+   {
+    "date": "20261114T000000Z",
+    "value": 0.5676
+   },
+   {
+    "date": "20261115T000000Z",
+    "value": 6.3194
+   }
+  ]
+ },
+ "\"Tesco\" timelinevolraw": {
+  "n_points": 3559,
+  "first": "20170101T000000Z",
+  "last": "20261115T000000Z",
+  "nonzero": 3553,
+  "sample": [
+   {
+    "date": "20170101T000000Z",
+    "value": 83,
+    "norm": 427906
+   },
+   {
+    "date": "20170102T000000Z",
+    "value": 148,
+    "norm": 592774
+   },
+   {
+    "date": "20261114T000000Z",
+    "value": 1,
+    "norm": 3545
+   },
+   {
+    "date": "20261115T000000Z",
+    "value": 3,
+    "norm": 1819
+   }
+  ]
+ },
+ "\"Rolls-Royce\" timelinetone": {
+  "error": "Expecting value: line 1 column 1 (char 0)",
+  "status": 429,
+  "text": "Please limit requests to one every 5 seconds or contact kalev.leetaru5@gmail.com for larger queries. All high-traffic users should switch to our ngrams dataset: https://blog.gdeltproject.org/using-the-new-web-ngrams-dataset-to-find-relevant-coverage/. For trend analysis, please see our daily newslet"
+ },
+ "\"Rolls-Royce\" timelinevolraw": {
+  "error": "Expecting value: line 1 column 1 (char 0)",
+  "status": 429,
+  "text": "Please limit requests to one every 5 seconds or contact kalev.leetaru5@gmail.com for larger queries. All high-traffic users should switch to our ngrams dataset: https://blog.gdeltproject.org/using-the-new-web-ngrams-dataset-to-find-relevant-coverage/. For trend analysis, please see our daily newslet"
+ },
+ "\"Rotork\" timelinetone": {
+  "n_points": 3559,
+  "first": "20170101T000000Z",
+  "last": "20261115T000000Z",
+  "nonzero": 1472,
+  "sample": [
+   {
+    "date": "20170101T000000Z",
+    "value": 0
+   },
+   {
+    "date": "20170102T000000Z",
+    "value": 0
+   },
+   {
+    "date": "20261114T000000Z",
+    "value": 0
+   },
+   {
+    "date": "20261115T000000Z",
+    "value": 0
+   }
+  ]
+ },
+ "\"Rotork\" timelinevolraw": {
+  "error": "Expecting value: line 1 column 1 (char 0)",
+  "status": 429,
+  "text": "Please limit requests to one every 5 seconds or contact kalev.leetaru5@gmail.com for larger queries. All high-traffic users should switch to our ngrams dataset: https://blog.gdeltproject.org/using-the-new-web-ngrams-dataset-to-find-relevant-coverage/. For trend analysis, please see our daily newslet"
+ },
+ "\"Mitie\" timelinetone": {
+  "n_points": 3559,
+  "first": "20170101T000000Z",
+  "last": "20261115T000000Z",
+  "nonzero": 2003,
+  "sample": [
+   {
+    "date": "20170101T000000Z",
+    "value": 0
+   },
+   {
+    "date": "20170102T000000Z",
+    "value": 0
+   },
+   {
+    "date": "20261114T000000Z",
+    "value": 0
+   },
+   {
+    "date": "20261115T000000Z",
+    "value": 0
+   }
+  ]
+ },
+ "\"Mitie\" timelinevolraw": {
+  "n_points": 3559,
+  "first": "20170101T000000Z",
+  "last": "20261115T000000Z",
+  "nonzero": 2038,
+  "sample": [
+   {
+    "date": "20170101T000000Z",
+    "value": 0,
+    "norm": 427906
+   },
+   {
+    "date": "20170102T000000Z",
+    "value": 0,
+    "norm": 592774
+   },
+   {
+    "date": "20261114T000000Z",
+    "value": 0,
+    "norm": 3545
+   },
+   {
+    "date": "20261115T000000Z",
+    "value": 0,
+    "norm": 1819
+   }
+  ]
+ },
+ "\"Tate & Lyle\" timelinetone": {
+  "error": "Expecting value: line 1 column 1 (char 0)",
+  "status": 429,
+  "text": "Please limit requests to one every 5 seconds or contact kalev.leetaru5@gmail.com for larger queries. All high-traffic users should switch to our ngrams dataset: https://blog.gdeltproject.org/using-the-new-web-ngrams-dataset-to-find-relevant-coverage/. For trend analysis, please see our daily newslet"
+ },
+ "\"Tate & Lyle\" timelinevolraw": {
+  "error": "Expecting value: line 1 column 1 (char 0)",
+  "status": 429,
+  "text": "Please limit requests to one every 5 seconds or contact kalev.leetaru5@gmail.com for larger queries. All high-traffic users should switch to our ngrams dataset: https://blog.gdeltproject.org/using-the-new-web-ngrams-dataset-to-find-relevant-coverage/. For trend analysis, please see our daily newslet"
+ },
+ "\"Playtech\" timelinetone": {
+  "n_points": 3559,
+  "first": "20170101T000000Z",
+  "last": "20261115T000000Z",
+  "nonzero": 2449,
+  "sample": [
+   {
+    "date": "20170101T000000Z",
+    "value": 3.2338
+   },
+   {
+    "date": "20170102T000000Z",
+    "value": 3.5242
+   },
+   {
+    "date": "20261114T000000Z",
+    "value": 0
+   },
+   {
+    "date": "20261115T000000Z",
+    "value": 0
+   }
+  ]
+ },
+ "\"Playtech\" timelinevolraw": {
+  "n_points": 3559,
+  "first": "20170101T000000Z",
+  "last": "20261115T000000Z",
+  "nonzero": 2468,
+  "sample": [
+   {
+    "date": "20170101T000000Z",
+    "value": 1,
+    "norm": 427906
+   },
+   {
+    "date": "20170102T000000Z",
+    "value": 1,
+    "norm": 592774
+   },
+   {
+    "date": "20261114T000000Z",
+    "value": 0,
+    "norm": 3545
+   },
+   {
+    "date": "20261115T000000Z",
+    "value": 0,
+    "norm": 1819
+   }
+  ]
+ }
+}

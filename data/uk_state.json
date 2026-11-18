@@ -8,7 +8,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 6.87,
-      "rank_today": 4,
+      "rank_today": 93,
       "sector": "Financial Services"
     },
     "TATE.L": {
@@ -18,7 +18,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 5.615,
-      "rank_today": 2,
+      "rank_today": 9,
       "sector": "Food Producers"
     },
     "PTEC.L": {
@@ -28,7 +28,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 3.516000061035156,
-      "rank_today": 12,
+      "rank_today": 39,
       "sector": "Software & Computer Services"
     },
     "GLEN.L": {
@@ -38,7 +38,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 4.914500122070312,
-      "rank_today": 13,
+      "rank_today": 77,
       "sector": "Industrial Metals and Mining"
     },
     "MNTN.L": {
@@ -48,7 +48,7 @@
       "entry_date": "2026-11-17",
       "currency": "USD",
       "px_gbp": 2.109999895095825,
-      "rank_today": 9,
+      "rank_today": 11,
       "sector": "Investment Trusts"
     },
     "RIO.L": {
@@ -58,7 +58,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 60.53,
-      "rank_today": 20,
+      "rank_today": 121,
       "sector": "Industrial Metals and Mining"
     },
     "MTO.L": {
@@ -68,7 +68,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 2.073999938964844,
-      "rank_today": 3,
+      "rank_today": 26,
       "sector": "Support Services"
     },
     "ROR.L": {
@@ -78,7 +78,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 4.9320001220703125,
-      "rank_today": 1,
+      "rank_today": 54,
       "sector": "Industrial Engineering"
     },
     "HSBA.L": {
@@ -88,7 +88,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 13.19800048828125,
-      "rank_today": 16,
+      "rank_today": 2,
       "sector": "Banks"
     },
     "HANA.L": {
@@ -98,7 +98,7 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 3.22,
-      "rank_today": 7,
+      "rank_today": 8,
       "sector": "Investment Trusts"
     }
   },
@@ -108,7 +108,7 @@
   },
   "start_date": "2026-11-17",
   "last_rebalance": "2026-11-17",
-  "model": "Ensemble",
+  "model": "LightGBM + earnings",
   "last_trades": [
     {
       "date": "2026-11-17",

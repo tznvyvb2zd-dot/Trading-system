@@ -58,17 +58,17 @@ N_RANDOM = 20             # honesty check: random portfolios run under exactly t
 HURDLE = (BUY_COST_BPS + SELL_COST_BPS) / 1e4   # tax rule: a swap must be expected to earn more than its ~0.7% cost
 DROP_DAY = -0.08          # sudden-drop alert: down 8%+ in a day ...
 DROP_TOTAL = -0.15        # ... or 15%+ since bought; SELL if the raw (unsmoothed) rank is also worse than BUFFER_RANK
-SIGNAL_MODEL = os.environ.get("TS_SIGNAL_MODEL", "auto")
+SIGNAL_MODEL = os.environ.get("TS_SIGNAL_MODEL", "LightGBM ranked")   # fixed in advance (no picking the best afterwards)
 
 AS_OF = os.environ.get("AS_OF")
 FORCE_REBALANCE = os.environ.get("FORCE_REBALANCE", "").lower() in ("1", "true", "yes")
 USE_EARNINGS = os.environ.get("TS_EARNINGS", "1") != "0"
 
-ML_MODELS = ["Logistic regression", "LightGBM", "Ensemble"] + (
-    ["LR + earnings", "LightGBM + earnings", "Ensemble + earnings"] if USE_EARNINGS else [])
+# "LightGBM ranked" = the model-lab winner (Nov 2026): every stock-level feature ranked against the rest of the
+# market each day. "LightGBM + earnings" is the previous live model, kept as a comparison.
+ML_MODELS = ["LightGBM ranked", "LightGBM + earnings" if USE_EARNINGS else "LightGBM"]
 SCORES = ML_MODELS + ["Momentum rule"]
-ENSEMBLES = {"Ensemble": ["Logistic regression", "LightGBM"],
-             "Ensemble + earnings": ["LR + earnings", "LightGBM + earnings"]}
+ENSEMBLES = {}
 
 
 def log(msg: str) -> None:
@@ -183,6 +183,43 @@ RANKED = ["ret_5d", "ret_20d", "ret_60d", "vol_20d", "rsi_14", "dist_52w_high"]
 NEW_FEATURES = ["ret_1d", "mom_12_1", "dist_52w_high", "max_ret_20d", "beta_60d", "sector_mom_60d",
                 "vs_sector_60d", "days_into_quarter"] + [f"rank_{k}" for k in RANKED]
 FEATURES = OLD_FEATURES + NEW_FEATURES
+EXTRA_FEATURES = ["idio_vol_60d", "vol_252d", "downside_vol_60d", "skew_60d", "amihud_60d", "turnover_trend",
+                  "resid_mom_12_1", "vol_adj_mom", "seasonality", "dist_52w_low", "mkt_corr_60d", "vs_sector_20d", "ret_120d"]
+MARKET_LEVEL = ["days_into_quarter", "mkt_ret_20d", "mkt_vol_20d"]
+STOCK_LEVEL = [c for c in FEATURES + EXTRA_FEATURES if c not in MARKET_LEVEL and not c.startswith("rank_")]
+RANKED_SET = [f"xr_{c}" for c in STOCK_LEVEL] + MARKET_LEVEL
+
+
+def extra_features(close, volume, mkt, mask, sector_of):
+    """Model-lab features (may be missing early in a stock's history; never used to drop rows)."""
+    r1, m1 = close.pct_change(fill_method=None), mkt.pct_change()
+    sectors = np.array([sector_of.get(t, "Unknown") for t in close.columns])
+    var_m60, var_m252 = m1.rolling(60).var(), m1.rolling(252).var()
+    beta60 = r1.rolling(60).cov(m1).div(var_m60, axis=0)
+    beta252 = r1.rolling(252).cov(m1).div(var_m252, axis=0)
+    vol252 = r1.rolling(252).std()
+    mom = close.shift(21) / close.shift(252) - 1
+    mkt_mom = mkt.shift(21) / mkt.shift(252) - 1
+    seas = pd.concat([close.shift(252 * k - 21) / close.shift(252 * k) - 1 for k in range(1, 6)],
+                     keys=range(5)).groupby(level=1).mean().reindex(close.index)     # same month in past years
+    seas_n = sum(close.shift(252 * k).notna().astype(int) for k in range(1, 6))
+    ret20 = close.pct_change(20, fill_method=None)
+    f = {
+        "idio_vol_60d": (r1.rolling(60).var() - beta60.pow(2).mul(var_m60, axis=0)).clip(lower=0) ** 0.5,
+        "vol_252d": vol252,
+        "downside_vol_60d": r1.clip(upper=0).pow(2).rolling(60).mean() ** 0.5,
+        "skew_60d": r1.rolling(60).skew(),
+        "amihud_60d": np.log1p((r1.abs() / (close * volume).replace(0, np.nan)).rolling(60, min_periods=20).mean() * 1e6),
+        "turnover_trend": volume.rolling(20).mean() / volume.rolling(252).mean().replace(0, np.nan),
+        "resid_mom_12_1": mom - beta252.mul(mkt_mom, axis=0),
+        "vol_adj_mom": mom / (vol252 * np.sqrt(252)),
+        "seasonality": seas.where(seas_n >= 2),
+        "dist_52w_low": close / close.rolling(252).min() - 1,
+        "mkt_corr_60d": r1.rolling(60).corr(m1),
+        "vs_sector_20d": ret20 - ret20.where(mask).T.groupby(sectors).transform("mean").T,
+        "ret_120d": close.pct_change(120, fill_method=None),
+    }
+    return {k: v.replace([np.inf, -np.inf], np.nan) for k, v in f.items()}
 
 
 def rsi(prices, n=14):
@@ -228,6 +265,11 @@ def build_dataset(close, volume, mkt, mask, sector_of, keep_dates, earn_f=None, 
     if earn_f is not None:
         for k in EARN_FEATURES:
             df[k] = to_long(earn_f[k]).reindex(df.index).fillna(0).astype("float32")
+    for k, w in extra_features(close, volume, mkt, mask, sector_of).items():
+        df[k] = to_long(w).reindex(df.index).astype("float32")
+    dd = df.index.get_level_values(0)
+    for c in STOCK_LEVEL:                                   # rank each feature against the market that day
+        df[f"xr_{c}"] = df.groupby(dd)[c].rank(pct=True).astype("float32")
     df["fwd_ret"] = to_long(fwd).reindex(df.index)
     df["target"] = to_long(target).reindex(df.index)
     df.index.names = ["date", "ticker"]
@@ -235,6 +277,8 @@ def build_dataset(close, volume, mkt, mask, sector_of, keep_dates, earn_f=None, 
 
 
 def feats_for(name):
+    if "ranked" in name:
+        return RANKED_SET + (EARN_FEATURES if USE_EARNINGS else [])
     return FEATURES + EARN_FEATURES if "earnings" in name else FEATURES
 
 
@@ -247,10 +291,7 @@ def make_models():
     gbm = lambda: lgb.LGBMClassifier(n_estimators=300, learning_rate=0.03, num_leaves=15, min_child_samples=200,
                                      subsample=0.8, subsample_freq=1, colsample_bytree=0.8, reg_lambda=1.0,
                                      random_state=42, verbose=-1)
-    models = {"Logistic regression": lr(), "LightGBM": gbm()}
-    if USE_EARNINGS:
-        models.update({"LR + earnings": lr(), "LightGBM + earnings": gbm()})
-    return models
+    return {name: (lr() if name.startswith(("Logistic", "LR")) else gbm()) for name in ML_MODELS}
 
 
 def add_derived(p):
@@ -743,7 +784,7 @@ def main():
                     "random_median_sharpe": float(np.median(backtest.get("random_sharpes") or [np.nan])),
                     "beats_random_share": (float(np.mean([x < table[key]["Sharpe"] for x in backtest["random_sharpes"]]))
                                            if backtest.get("random_sharpes") else None),
-                    "models_compared": len(ML_MODELS)},
+                    "models_compared": 1 if SIGNAL_MODEL != "auto" else len(ML_MODELS)},
         "costs": {"buy_bps": BUY_COST_BPS, "sell_bps": SELL_COST_BPS, "note": "0.5% stamp duty + spread on UK buys"},
         "disclaimer": "Paper trading / research only. Not financial advice.",
         "my_portfolio": my_portfolio(nav),

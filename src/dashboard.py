@@ -13,13 +13,14 @@ EDIT_URL = f"{REPO}/edit/main/docs/my_portfolio.json"
 # dark-mode chart colours (validated categorical steps for dark surfaces)
 BASE = {"Logistic regression": "#3987e5", "LightGBM": "#d95926", "Ensemble": "#199e70",
         "LR + earnings": "#9085e9", "LightGBM + earnings": "#e66767", "Ensemble + earnings": "#0ca30c",
-        "Momentum rule": "#c98500"}
+        "Momentum rule": "#c98500", "LightGBM ranked": "#3987e5"}
 FIXED = {"Equal-weight (all)": ("#d55181", "solid"), "FTSE 100 tracker": ("#a3acbd", "dash"),
          "FTSE 250 tracker": ("#6b7588", "dashdot"), "Random 10 stocks (typical)": ("#b9a27a", "dot")}
 BG, CARD, LINE, TEXT, MUTED = "#0B0F17", "#121826", "#1F2937", "#E6EAF2", "#8B95A7"
 CONFIG = {"displayModeBar": False, "responsive": True}
 SHORT = {"Logistic regression": "LR", "LightGBM": "LGBM", "Ensemble": "Ens", "LR + earnings": "LR+E",
-         "LightGBM + earnings": "LGBM+E", "Ensemble + earnings": "Ens+E", "Momentum rule": "Momentum"}
+         "LightGBM + earnings": "LGBM+E", "Ensemble + earnings": "Ens+E", "Momentum rule": "Momentum",
+         "LightGBM ranked": "LGBM ranked"}
 
 
 def line_style(name):
@@ -115,8 +116,10 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
                f"{'beats both' if ok else 'does <b>not</b> beat both'} FTSE trackers on risk-adjusted return (Sharpe "
                f"{v['model_sharpe']:.2f} vs FTSE 100 {v['ftse100_sharpe']:.2f} · FTSE 250 {v['ftse250_sharpe']:.2f}). "
                + (f"<br><b>Honesty check:</b> beats {v['beats_random_share']:.0%} of 20 random 10-stock portfolios run with the "
-                  f"same rules (typical random Sharpe {v['random_median_sharpe']:.2f}). It was picked as the best of "
-                  f"{v.get('models_compared', 6)} models, which flatters it, so treat any edge as unproven. "
+                  f"same rules (typical random Sharpe {v['random_median_sharpe']:.2f}). "
+                  + ("This model was fixed in advance after a test on 2012–2023 with 2024–26 held back, so it wasn't "
+                     "picked for looking good here. " if v.get("models_compared") == 1 else
+                     f"It was picked as the best of {v.get('models_compared', 6)} models, which flatters it, so treat any edge as unproven. ")
                   if v.get("beats_random_share") is not None else "")
                + "Treat this as a live experiment, not advice.</div>")
 

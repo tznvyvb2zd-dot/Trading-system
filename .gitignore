@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 research/cache/
 research/v2/
+research/v3/*.pkl.gz

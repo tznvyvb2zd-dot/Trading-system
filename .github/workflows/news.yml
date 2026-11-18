@@ -1,0 +1,38 @@
+name: Collect news history
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"      # every 3 hours until all companies are collected (GDELT is heavily rate-limited)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    concurrency:
+      group: news-${{ matrix.shard }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install pandas requests
+      - run: python src/research_news_${{ matrix.shard }}.py
+        timeout-minutes: 100
+      - name: Save
+        if: always()
+        run: |
+          git config user.name "trading-bot"
+          git config user.email "trading-bot@users.noreply.github.com"
+          git add research/news
+          git diff --cached --quiet || git commit -m "News history shard ${{ matrix.shard }} $(date -u +%F-%H%M)"
+          for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push && break; sleep $((RANDOM % 20 + 5)); done

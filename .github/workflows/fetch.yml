@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: daily-run          # never overlap with the daily trading run (both commit)
+  group: research-${{ inputs.script }}   # research jobs run side by side; they only commit research/ (pull --rebase before push)
   cancel-in-progress: false
 
 jobs:

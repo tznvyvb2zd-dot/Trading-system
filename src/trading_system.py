@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
@@ -138,7 +139,20 @@ def clean_prices(close):
 
 
 def market_data():
-    b, _ = _download(list(dict.fromkeys([MARKET] + list(BENCHMARKS.values()))))
+    want = list(dict.fromkeys([MARKET] + list(BENCHMARKS.values())))
+    b, missing = pd.DataFrame(), want
+    for attempt in range(4):                                # Yahoo sometimes drops a ticker: retry the missing ones
+        try:
+            got, _ = _download(missing)
+            b = got.reindex(columns=missing).combine_first(b) if len(b) else got
+        except Exception as e:  # noqa: BLE001
+            log(f"benchmark download failed ({e}); retrying")
+        missing = [t for t in want if t not in b or b[t].notna().sum() < 500]
+        if not missing:
+            break
+        time.sleep(10 * (attempt + 1))
+    if missing:
+        raise RuntimeError(f"benchmark prices missing from Yahoo: {missing}")   # fail loudly rather than publish blanks
     dates = b[MARKET].dropna().index
     if AS_OF:
         dates = dates[dates <= pd.Timestamp(AS_OF)]

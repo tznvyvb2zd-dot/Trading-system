@@ -1,6 +1,6 @@
 {
   "market": "UK (FTSE 350)",
-  "generated_at_utc": "2026-11-18 14:37",
+  "generated_at_utc": "2026-11-18 14:46",
   "market_date": "2026-11-17",
   "model": "LightGBM + earnings",
   "buffer_rank": 50,
@@ -16,28 +16,18 @@
         "return_since_start": 0.0
       },
       "FTSE 250 tracker": {
-        "value_gbp": NaN,
-        "return_since_start": NaN
+        "value_gbp": 100.0,
+        "return_since_start": 0.0
       }
     },
     "day_change": null
   },
   "holdings": [
     {
-      "ticker": "TATE.L",
-      "sector": "Food Producers",
-      "value_gbp": 9.94,
-      "rank_today": 3,
-      "return_since_entry": 0.0,
-      "entry_date": "2026-11-17",
-      "price_gbp": 5.615,
-      "shares": 1.7703
-    },
-    {
       "ticker": "HSBA.L",
       "sector": "Banks",
       "value_gbp": 9.94,
-      "rank_today": 5,
+      "rank_today": 3,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
       "price_gbp": 13.198,
@@ -54,14 +44,14 @@
       "shares": 3.0871
     },
     {
-      "ticker": "MTO.L",
-      "sector": "Support Services",
+      "ticker": "TATE.L",
+      "sector": "Food Producers",
       "value_gbp": 9.94,
-      "rank_today": 9,
+      "rank_today": 10,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
-      "price_gbp": 2.074,
-      "shares": 4.7928
+      "price_gbp": 5.615,
+      "shares": 1.7703
     },
     {
       "ticker": "ROR.L",
@@ -77,37 +67,37 @@
       "ticker": "MNTN.L",
       "sector": "Investment Trusts",
       "value_gbp": 9.94,
-      "rank_today": 20,
+      "rank_today": 16,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
       "price_gbp": 2.11,
       "shares": 4.7111
     },
     {
+      "ticker": "MTO.L",
+      "sector": "Support Services",
+      "value_gbp": 9.94,
+      "rank_today": 20,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-17",
+      "price_gbp": 2.074,
+      "shares": 4.7928
+    },
+    {
       "ticker": "PTEC.L",
       "sector": "Software & Computer Services",
       "value_gbp": 9.94,
-      "rank_today": 46,
+      "rank_today": 52,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
       "price_gbp": 3.516,
       "shares": 2.8272
     },
     {
-      "ticker": "RIO.L",
-      "sector": "Industrial Metals and Mining",
-      "value_gbp": 9.94,
-      "rank_today": 90,
-      "return_since_entry": 0.0,
-      "entry_date": "2026-11-17",
-      "price_gbp": 60.53,
-      "shares": 0.1642
-    },
-    {
       "ticker": "CMCX.L",
       "sector": "Financial Services",
       "value_gbp": 9.94,
-      "rank_today": 116,
+      "rank_today": 99,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
       "price_gbp": 6.87,
@@ -117,11 +107,21 @@
       "ticker": "GLEN.L",
       "sector": "Industrial Metals and Mining",
       "value_gbp": 9.94,
-      "rank_today": 163,
+      "rank_today": 109,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
       "price_gbp": 4.9145,
       "shares": 2.0227
+    },
+    {
+      "ticker": "RIO.L",
+      "sector": "Industrial Metals and Mining",
+      "value_gbp": 9.94,
+      "rank_today": 112,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-17",
+      "price_gbp": 60.53,
+      "shares": 0.1642
     }
   ],
   "watchlist": [
@@ -129,91 +129,91 @@
       "ticker": "BARC.L",
       "rank": 1,
       "sector": "Banks",
-      "score": 0.633
+      "score": 0.6274
     },
     {
       "ticker": "LLOY.L",
       "rank": 2,
       "sector": "Banks",
-      "score": 0.5834
+      "score": 0.5688
     },
     {
-      "ticker": "TATE.L",
+      "ticker": "HSBA.L",
       "rank": 3,
-      "sector": "Food Producers",
-      "score": 0.5582
+      "sector": "Banks",
+      "score": 0.5538
     },
     {
       "ticker": "STAN.L",
       "rank": 4,
       "sector": "Banks",
-      "score": 0.5568
-    },
-    {
-      "ticker": "HSBA.L",
-      "rank": 5,
-      "sector": "Banks",
-      "score": 0.5563
-    },
-    {
-      "ticker": "BGEO.L",
-      "rank": 6,
-      "sector": "Banks",
-      "score": 0.5512
+      "score": 0.5501
     },
     {
       "ticker": "JDW.L",
-      "rank": 7,
+      "rank": 5,
       "sector": "Travel & Leisure",
-      "score": 0.5487
+      "score": 0.5471
+    },
+    {
+      "ticker": "CCH.L",
+      "rank": 6,
+      "sector": "Beverages",
+      "score": 0.5448
+    },
+    {
+      "ticker": "BGEO.L",
+      "rank": 7,
+      "sector": "Banks",
+      "score": 0.5424
     },
     {
       "ticker": "HANA.L",
       "rank": 8,
       "sector": "Investment Trusts",
-      "score": 0.5461
+      "score": 0.5378
     },
     {
-      "ticker": "MTO.L",
+      "ticker": "AAF.L",
       "rank": 9,
-      "sector": "Support Services",
-      "score": 0.5447
+      "sector": "Telecommunications Service Providers",
+      "score": 0.5375
     },
     {
-      "ticker": "CCH.L",
+      "ticker": "TATE.L",
       "rank": 10,
-      "sector": "Beverages",
-      "score": 0.5401
+      "sector": "Food Producers",
+      "score": 0.5349
     },
     {
       "ticker": "ROR.L",
       "rank": 11,
       "sector": "Industrial Engineering",
-      "score": 0.5381
-    },
-    {
-      "ticker": "BOY.L",
-      "rank": 12,
-      "sector": "Industrial Engineering",
-      "score": 0.5355
-    },
-    {
-      "ticker": "EZJ.L",
-      "rank": 13,
-      "sector": "Travel and Leisure",
-      "score": 0.5348
-    },
-    {
-      "ticker": "DCC.L",
-      "rank": 14,
-      "sector": "Industrial Support Services",
-      "score": 0.5325
+      "score": 0.5303
     },
     {
       "ticker": "ZIG.L",
-      "rank": 15,
+      "rank": 12,
       "sector": "Support Services",
-      "score": 0.5309
+      "score": 0.5303
+    },
+    {
+      "ticker": "NWG.L",
+      "rank": 13,
+      "sector": "Banks",
+      "score": 0.5286
+    },
+    {
+      "ticker": "SEIT.L",
+      "rank": 14,
+      "sector": "Energy",
+      "score": 0.5284
+    },
+    {
+      "ticker": "ITH.L",
+      "rank": 15,
+      "sector": "Non-Renewable Energy",
+      "score": 0.5279
     }
   ],
   "smooth_days": 10,
@@ -224,29 +224,34 @@
     "drop_alerts": [],
     "held_back": [
       {
-        "keep": "GLEN.L",
+        "keep": "ROR.L",
         "instead_of": "BARC.L",
-        "expected_gain": 0.0013
+        "expected_gain": 0.0017
       },
       {
         "keep": "CMCX.L",
         "instead_of": "BARC.L",
-        "expected_gain": 0.001
+        "expected_gain": 0.0015
       },
       {
-        "keep": "ROR.L",
+        "keep": "MTO.L",
         "instead_of": "BARC.L",
-        "expected_gain": 0.0006
-      },
-      {
-        "keep": "RIO.L",
-        "instead_of": "BARC.L",
-        "expected_gain": 0.0003
+        "expected_gain": 0.0007
       },
       {
         "keep": "PTEC.L",
         "instead_of": "BARC.L",
-        "expected_gain": 0.0002
+        "expected_gain": 0.0005
+      },
+      {
+        "keep": "GLEN.L",
+        "instead_of": "BARC.L",
+        "expected_gain": 0.0003
+      },
+      {
+        "keep": "TATE.L",
+        "instead_of": "BARC.L",
+        "expected_gain": 0.0003
       },
       {
         "keep": "HSBA.L",
@@ -257,8 +262,8 @@
   },
   "tax_rule": {
     "hurdle": 0.007,
-    "slope_raw": 0.004709656433378977,
-    "slope_smooth": 0.0030629790868471453
+    "slope_raw": 0.00497325484200147,
+    "slope_smooth": 0.003342698413383503
   },
   "last_trades": {
     "date": "2026-11-17",
@@ -355,97 +360,97 @@
     ],
     "auc": {
       "Logistic regression": 0.509,
-      "LightGBM": 0.511,
-      "Ensemble": 0.5119,
-      "LR + earnings": 0.5078,
-      "LightGBM + earnings": 0.5122,
-      "Ensemble + earnings": 0.5123,
-      "Momentum rule": 0.4976
+      "LightGBM": 0.5106,
+      "Ensemble": 0.5116,
+      "LR + earnings": 0.5077,
+      "LightGBM + earnings": 0.5128,
+      "Ensemble + earnings": 0.5127,
+      "Momentum rule": 0.4977
     },
     "table": {
       "Logistic regression \u00b7 monthly": {
-        "CAGR": 0.043,
-        "Volatility": 0.2206,
-        "Sharpe": 0.3015,
+        "CAGR": 0.0471,
+        "Volatility": 0.2201,
+        "Sharpe": 0.3196,
         "Max drawdown": -0.5426,
-        "\u00a3100 grew to": 187.3649
+        "\u00a3100 grew to": 198.7406
       },
       "Logistic regression \u00b7 daily check": {
-        "CAGR": 0.0714,
-        "Volatility": 0.2057,
-        "Sharpe": 0.4382,
-        "Max drawdown": -0.4526,
-        "\u00a3100 grew to": 279.4845
+        "CAGR": 0.0832,
+        "Volatility": 0.2072,
+        "Sharpe": 0.4896,
+        "Max drawdown": -0.4721,
+        "\u00a3100 grew to": 329.1597
       },
       "LightGBM \u00b7 monthly": {
-        "CAGR": 0.0779,
-        "Volatility": 0.1777,
-        "Sharpe": 0.5113,
-        "Max drawdown": -0.4782,
-        "\u00a3100 grew to": 306.1635
+        "CAGR": 0.0828,
+        "Volatility": 0.2081,
+        "Sharpe": 0.4869,
+        "Max drawdown": -0.5024,
+        "\u00a3100 grew to": 327.5527
       },
       "LightGBM \u00b7 daily check": {
-        "CAGR": 0.0623,
-        "Volatility": 0.16,
-        "Sharpe": 0.4584,
-        "Max drawdown": -0.4091,
-        "\u00a3100 grew to": 246.4429
+        "CAGR": 0.0643,
+        "Volatility": 0.1531,
+        "Sharpe": 0.4837,
+        "Max drawdown": -0.423,
+        "\u00a3100 grew to": 253.1566
       },
       "Ensemble \u00b7 monthly": {
-        "CAGR": 0.0616,
-        "Volatility": 0.188,
-        "Sharpe": 0.4125,
-        "Max drawdown": -0.4305,
-        "\u00a3100 grew to": 243.9609
+        "CAGR": 0.0685,
+        "Volatility": 0.1876,
+        "Sharpe": 0.4471,
+        "Max drawdown": -0.4735,
+        "\u00a3100 grew to": 268.4963
       },
       "Ensemble \u00b7 daily check": {
-        "CAGR": 0.071,
-        "Volatility": 0.1601,
-        "Sharpe": 0.5092,
-        "Max drawdown": -0.3275,
-        "\u00a3100 grew to": 278.3075
+        "CAGR": 0.0719,
+        "Volatility": 0.1658,
+        "Sharpe": 0.502,
+        "Max drawdown": -0.4561,
+        "\u00a3100 grew to": 281.5708
       },
       "LR + earnings \u00b7 monthly": {
-        "CAGR": 0.0685,
-        "Volatility": 0.2008,
-        "Sharpe": 0.4307,
-        "Max drawdown": -0.4116,
-        "\u00a3100 grew to": 268.6359
+        "CAGR": 0.0657,
+        "Volatility": 0.1907,
+        "Sharpe": 0.4291,
+        "Max drawdown": -0.3681,
+        "\u00a3100 grew to": 258.169
       },
       "LR + earnings \u00b7 daily check": {
-        "CAGR": 0.075,
-        "Volatility": 0.1986,
-        "Sharpe": 0.4635,
-        "Max drawdown": -0.4171,
-        "\u00a3100 grew to": 294.0699
+        "CAGR": 0.0623,
+        "Volatility": 0.2189,
+        "Sharpe": 0.3855,
+        "Max drawdown": -0.5048,
+        "\u00a3100 grew to": 246.278
       },
       "LightGBM + earnings \u00b7 monthly": {
-        "CAGR": 0.1087,
-        "Volatility": 0.1826,
-        "Sharpe": 0.6566,
-        "Max drawdown": -0.3699,
-        "\u00a3100 grew to": 465.7894
+        "CAGR": 0.0947,
+        "Volatility": 0.1893,
+        "Sharpe": 0.5734,
+        "Max drawdown": -0.462,
+        "\u00a3100 grew to": 385.7158
       },
       "LightGBM + earnings \u00b7 daily check": {
-        "CAGR": 0.1086,
-        "Volatility": 0.1536,
-        "Sharpe": 0.7485,
-        "Max drawdown": -0.3451,
-        "\u00a3100 grew to": 465.3613
+        "CAGR": 0.091,
+        "Volatility": 0.1629,
+        "Sharpe": 0.6165,
+        "Max drawdown": -0.3908,
+        "\u00a3100 grew to": 366.425
       },
       "Ensemble + earnings \u00b7 monthly": {
-        "CAGR": 0.0478,
-        "Volatility": 0.1872,
-        "Sharpe": 0.3433,
-        "Max drawdown": -0.4855,
-        "\u00a3100 grew to": 200.7116
+        "CAGR": 0.0619,
+        "Volatility": 0.1782,
+        "Sharpe": 0.4264,
+        "Max drawdown": -0.399,
+        "\u00a3100 grew to": 244.9394
       },
       "Ensemble + earnings \u00b7 daily check": {
-        "CAGR": 0.0841,
-        "Volatility": 0.1616,
-        "Sharpe": 0.5809,
-        "Max drawdown": -0.3562,
-        "\u00a3100 grew to": 333.2276
+        "CAGR": 0.0629,
+        "Volatility": 0.1644,
+        "Sharpe": 0.4538,
+        "Max drawdown": -0.424,
+        "\u00a3100 grew to": 248.3797
       },
       "Momentum rule \u00b7 monthly": {
         "CAGR": 0.0379,
@@ -455,39 +460,39 @@
         "\u00a3100 grew to": 174.2534
       },
       "Momentum rule \u00b7 daily check": {
-        "CAGR": 0.0567,
-        "Volatility": 0.1727,
-        "Sharpe": 0.4059,
-        "Max drawdown": -0.3842,
-        "\u00a3100 grew to": 227.5119
+        "CAGR": 0.0702,
+        "Volatility": 0.1718,
+        "Sharpe": 0.4811,
+        "Max drawdown": -0.3806,
+        "\u00a3100 grew to": 274.8985
       },
       "Random 10 stocks (typical)": {
-        "CAGR": 0.0515,
+        "CAGR": 0.0516,
         "Volatility": 0.1571,
-        "Sharpe": 0.3985,
+        "Sharpe": 0.3994,
         "Max drawdown": -0.3645,
-        "\u00a3100 grew to": 211.4853
+        "\u00a3100 grew to": 211.9097
       },
       "Equal-weight (all)": {
-        "CAGR": 0.0661,
+        "CAGR": 0.0662,
         "Volatility": 0.1496,
-        "Sharpe": 0.5028,
-        "Max drawdown": -0.3916,
-        "\u00a3100 grew to": 259.7401
+        "Sharpe": 0.5038,
+        "Max drawdown": -0.3914,
+        "\u00a3100 grew to": 260.2499
       },
       "FTSE 100 tracker": {
         "CAGR": 0.0457,
         "Volatility": 0.1486,
         "Sharpe": 0.375,
         "Max drawdown": -0.3729,
-        "\u00a3100 grew to": 194.5844
+        "\u00a3100 grew to": 194.5843
       },
       "FTSE 250 tracker": {
-        "CAGR": 0.0,
-        "Volatility": 0.0,
-        "Sharpe": NaN,
-        "Max drawdown": 0.0,
-        "\u00a3100 grew to": 100.0
+        "CAGR": 0.0569,
+        "Volatility": 0.1565,
+        "Sharpe": 0.4321,
+        "Max drawdown": -0.4183,
+        "\u00a3100 grew to": 228.2515
       }
     },
     "coverage": {
@@ -513,92 +518,92 @@
     "daily_vs_monthly": [
       {
         "model": "Logistic regression",
-        "sharpe_monthly": 0.3015,
-        "sharpe_daily": 0.4382,
-        "sharpe_daily_no_tax_rule": 0.2176,
-        "cagr_monthly": 0.043,
-        "cagr_daily": 0.0714
+        "sharpe_monthly": 0.3196,
+        "sharpe_daily": 0.4896,
+        "sharpe_daily_no_tax_rule": 0.167,
+        "cagr_monthly": 0.0471,
+        "cagr_daily": 0.0832
       },
       {
         "model": "LightGBM",
-        "sharpe_monthly": 0.5113,
-        "sharpe_daily": 0.4584,
-        "sharpe_daily_no_tax_rule": 0.2015,
-        "cagr_monthly": 0.0779,
-        "cagr_daily": 0.0623
+        "sharpe_monthly": 0.4869,
+        "sharpe_daily": 0.4837,
+        "sharpe_daily_no_tax_rule": 0.0022,
+        "cagr_monthly": 0.0828,
+        "cagr_daily": 0.0643
       },
       {
         "model": "Ensemble",
-        "sharpe_monthly": 0.4125,
-        "sharpe_daily": 0.5092,
-        "sharpe_daily_no_tax_rule": 0.2754,
-        "cagr_monthly": 0.0616,
-        "cagr_daily": 0.071
+        "sharpe_monthly": 0.4471,
+        "sharpe_daily": 0.502,
+        "sharpe_daily_no_tax_rule": 0.2304,
+        "cagr_monthly": 0.0685,
+        "cagr_daily": 0.0719
       },
       {
         "model": "LR + earnings",
-        "sharpe_monthly": 0.4307,
-        "sharpe_daily": 0.4635,
-        "sharpe_daily_no_tax_rule": 0.1316,
-        "cagr_monthly": 0.0685,
-        "cagr_daily": 0.075
+        "sharpe_monthly": 0.4291,
+        "sharpe_daily": 0.3855,
+        "sharpe_daily_no_tax_rule": 0.1646,
+        "cagr_monthly": 0.0657,
+        "cagr_daily": 0.0623
       },
       {
         "model": "LightGBM + earnings",
-        "sharpe_monthly": 0.6566,
-        "sharpe_daily": 0.7485,
-        "sharpe_daily_no_tax_rule": 0.261,
-        "cagr_monthly": 0.1087,
-        "cagr_daily": 0.1086
+        "sharpe_monthly": 0.5734,
+        "sharpe_daily": 0.6165,
+        "sharpe_daily_no_tax_rule": 0.0947,
+        "cagr_monthly": 0.0947,
+        "cagr_daily": 0.091
       },
       {
         "model": "Ensemble + earnings",
-        "sharpe_monthly": 0.3433,
-        "sharpe_daily": 0.5809,
-        "sharpe_daily_no_tax_rule": 0.2699,
-        "cagr_monthly": 0.0478,
-        "cagr_daily": 0.0841
+        "sharpe_monthly": 0.4264,
+        "sharpe_daily": 0.4538,
+        "sharpe_daily_no_tax_rule": 0.1951,
+        "cagr_monthly": 0.0619,
+        "cagr_daily": 0.0629
       },
       {
         "model": "Momentum rule",
         "sharpe_monthly": 0.2868,
-        "sharpe_daily": 0.4059,
-        "sharpe_daily_no_tax_rule": 0.0075,
+        "sharpe_daily": 0.4811,
+        "sharpe_daily_no_tax_rule": 0.0048,
         "cagr_monthly": 0.0379,
-        "cagr_daily": 0.0567
+        "cagr_daily": 0.0702
       }
     ],
     "random_sharpes": [
-      0.0906,
-      0.1965,
-      0.2003,
-      0.23,
-      0.2464,
-      0.2622,
-      0.2626,
-      0.3115,
-      0.3356,
-      0.3584,
-      0.3985,
-      0.4011,
+      0.0949,
+      0.1788,
+      0.1959,
+      0.2295,
+      0.2466,
+      0.2621,
+      0.2623,
+      0.3111,
+      0.3359,
+      0.3934,
+      0.3994,
+      0.4012,
       0.4259,
-      0.4352,
-      0.446,
-      0.4606,
-      0.4622,
-      0.4715,
-      0.5492,
-      0.5967
+      0.435,
+      0.4586,
+      0.4609,
+      0.4621,
+      0.4818,
+      0.5372,
+      0.5966
     ]
   },
   "verdict": {
-    "model_sharpe": 0.7485,
+    "model_sharpe": 0.6165,
     "ftse100_sharpe": 0.375,
-    "ftse250_sharpe": NaN,
-    "equal_weight_sharpe": 0.5028,
+    "ftse250_sharpe": 0.4321,
+    "equal_weight_sharpe": 0.5038,
     "beats_ftse100": true,
-    "beats_ftse250": false,
-    "random_median_sharpe": 0.37845,
+    "beats_ftse250": true,
+    "random_median_sharpe": 0.3964,
     "beats_random_share": 1.0,
     "models_compared": 6
   },

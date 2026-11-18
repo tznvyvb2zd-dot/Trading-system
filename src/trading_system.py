@@ -176,7 +176,7 @@ def rsi(prices, n=14):
     return 100 - 100 / (1 + gain / loss)
 
 
-def build_dataset(close, volume, mkt, mask, sector_of, keep_dates, earn_f=None):
+def build_dataset(close, volume, mkt, mask, sector_of, keep_dates, earn_f=None, extra=None):
     cols = close.columns
     r1, mkt_r1 = close.pct_change(fill_method=None), mkt.pct_change()
     mkt_ret20, mkt_vol20 = mkt.pct_change(20), mkt_r1.rolling(20).std()
@@ -199,6 +199,7 @@ def build_dataset(close, volume, mkt, mask, sector_of, keep_dates, earn_f=None):
     f["days_into_quarter"] = bc(pd.Series((close.index - close.index.to_period("Q").start_time).days, index=close.index))
     for k in RANKED:
         f[f"rank_{k}"] = f[k].where(mask).rank(axis=1, pct=True)
+    f.update(extra or {})                                   # optional extra features (wide frames), e.g. dividends
 
     fwd = close.shift(-H) / close - 1                     # FUTURE return: training label only
     fwd_m = fwd.where(mask)

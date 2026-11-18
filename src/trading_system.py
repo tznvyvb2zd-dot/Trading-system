@@ -52,6 +52,8 @@ MAX_PER_SECTOR = 2
 BUFFER_RANK = 50          # daily check: sell a holding only if its smoothed rank drops below this
 SMOOTH_DAYS = 10          # daily check uses a 10-day smoothed score (ignores one-day noise)
 MAX_SWAPS_PER_DAY = 2     # limits trading (each swap costs ~0.7% incl. stamp duty)
+RANDOM_CURVE = "Random 10 stocks (typical)"
+N_RANDOM = 20             # honesty check: random portfolios run under exactly the same rules
 HURDLE = (BUY_COST_BPS + SELL_COST_BPS) / 1e4   # tax rule: a swap must be expected to earn more than its ~0.7% cost
 DROP_DAY = -0.08          # sudden-drop alert: down 8%+ in a day ...
 DROP_TOTAL = -0.15        # ... or 15%+ since bought; SELL if the raw (unsmoothed) rank is also worse than BUFFER_RANK
@@ -425,6 +427,17 @@ def run_backtest(preds, targets, close, bench, mask, sector_of):
         curves[f"{s} · daily check"] = simulate(wide, smooth, ret_next, sector_of, members, daily=True, slopes=slopes)
         notax[s] = stats(simulate(wide, smooth, ret_next, sector_of, members, daily=True, tax=False))
         log(f"simulated {s}")
+    # Honesty check: random scores, same rules (monthly re-pick + daily check + tax rule + sector caps)
+    rng, template, rand = np.random.default_rng(7), preds[SCORES[0]].unstack("ticker").reindex(days), []
+    for _ in range(N_RANDOM):
+        rw = pd.DataFrame(rng.random(template.shape), index=days, columns=template.columns).where(template.notna())
+        sm = rw.ewm(span=SMOOTH_DAYS, min_periods=1).mean().where(rw.notna())
+        r = simulate(rw, sm, ret_next, sector_of, members, daily=True,
+                     slopes=(score_slopes(rw, fwd_ex, members), score_slopes(sm, fwd_ex, members)))
+        rand.append((stats(r)["Sharpe"], r))
+    rand.sort(key=lambda x: x[0])
+    curves[RANDOM_CURVE] = rand[len(rand) // 2][1]                  # the typical (median) random portfolio
+    log(f"random portfolios: Sharpe {rand[0][0]:.2f} to {rand[-1][0]:.2f}")
     curves["Equal-weight (all)"] = _equal_weight(members, ret_next)
     idx = curves["Equal-weight (all)"].index
     for name, tk in BENCHMARKS.items():
@@ -441,7 +454,7 @@ def run_backtest(preds, targets, close, bench, mask, sector_of):
                          "sharpe_daily_no_tax_rule": round(notax[s]["Sharpe"], 4),
                          "cagr_monthly": table[f"{s} · monthly"]["CAGR"],
                          "cagr_daily": table[f"{s} · daily check"]["CAGR"]} for s in SCORES]
-    return {"table": table, "auc": auc, "calibration": calibration, "yearly": yearly, "growth": growth, "daily_vs_monthly": daily_vs_monthly,
+    return {"table": table, "auc": auc, "calibration": calibration, "random_sharpes": [round(x[0], 4) for x in rand], "yearly": yearly, "growth": growth, "daily_vs_monthly": daily_vs_monthly,
             "period": [idx[0].strftime("%Y-%m-%d"), idx[-1].strftime("%Y-%m-%d")]}
 
 
@@ -707,12 +720,16 @@ def main():
         "last_rebalance": state["last_rebalance"],
         "next_rebalance_in_trading_days": max(H - len(dates[dates > pd.Timestamp(state["last_rebalance"])]), 0),
         "backtest": {k: backtest.get(k) for k in ("generated", "period", "auc", "table", "coverage", "earnings_coverage",
-                                                    "daily_vs_monthly")},
+                                                    "daily_vs_monthly", "random_sharpes")},
         "verdict": {"model_sharpe": table[key]["Sharpe"],
                     "ftse100_sharpe": table["FTSE 100 tracker"]["Sharpe"], "ftse250_sharpe": table["FTSE 250 tracker"]["Sharpe"],
                     "equal_weight_sharpe": table["Equal-weight (all)"]["Sharpe"],
                     "beats_ftse100": table[key]["Sharpe"] > table["FTSE 100 tracker"]["Sharpe"],
-                    "beats_ftse250": table[key]["Sharpe"] > table["FTSE 250 tracker"]["Sharpe"]},
+                    "beats_ftse250": table[key]["Sharpe"] > table["FTSE 250 tracker"]["Sharpe"],
+                    "random_median_sharpe": float(np.median(backtest.get("random_sharpes") or [np.nan])),
+                    "beats_random_share": (float(np.mean([x < table[key]["Sharpe"] for x in backtest["random_sharpes"]]))
+                                           if backtest.get("random_sharpes") else None),
+                    "models_compared": len(ML_MODELS)},
         "costs": {"buy_bps": BUY_COST_BPS, "sell_bps": SELL_COST_BPS, "note": "0.5% stamp duty + spread on UK buys"},
         "disclaimer": "Paper trading / research only. Not financial advice.",
         "my_portfolio": my_portfolio(nav),

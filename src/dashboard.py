@@ -15,7 +15,7 @@ BASE = {"Logistic regression": "#3987e5", "LightGBM": "#d95926", "Ensemble": "#1
         "LR + earnings": "#9085e9", "LightGBM + earnings": "#e66767", "Ensemble + earnings": "#0ca30c",
         "Momentum rule": "#c98500"}
 FIXED = {"Equal-weight (all)": ("#d55181", "solid"), "FTSE 100 tracker": ("#a3acbd", "dash"),
-         "FTSE 250 tracker": ("#6b7588", "dashdot")}
+         "FTSE 250 tracker": ("#6b7588", "dashdot"), "Random 10 stocks (typical)": ("#b9a27a", "dot")}
 BG, CARD, LINE, TEXT, MUTED = "#0B0F17", "#121826", "#1F2937", "#E6EAF2", "#8B95A7"
 CONFIG = {"displayModeBar": False, "responsive": True}
 SHORT = {"Logistic regression": "LR", "LightGBM": "LGBM", "Ensemble": "Ens", "LR + earnings": "LR+E",
@@ -33,7 +33,7 @@ def legend_name(s):
     if " · " in s:
         base, _, kind = s.partition(" · ")
         return f"{SHORT.get(base, base)} {'daily' if 'daily' in kind else 'monthly'}"
-    return {"Equal-weight (all)": "Equal-weight"}.get(s, s)
+    return {"Equal-weight (all)": "Equal-weight", "Random 10 stocks (typical)": "Random 10 (typical)"}.get(s, s)
 
 
 def _style(fig, title, h=320, legend_cols=False):
@@ -110,11 +110,15 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
                   "(0.5% stamp duty + spread), so it keeps what it has.</p>" + _table(hb, [
                       ("Keep", lambda a: f"<b>{nm(a['keep'])}</b>"), ("Instead of", lambda a: nm(a["instead_of"])),
                       ("Expected gain", lambda a: "–" if a["expected_gain"] is None else _pct(a["expected_gain"]))]) + "</div>")
-    ok = v["beats_ftse100"] and v["beats_ftse250"]
+    ok = v["beats_ftse100"] and v["beats_ftse250"] and (v.get("beats_random_share") or 0) >= 0.9
     verdict = (f"<div class='note {'pos' if ok else 'neg'}'><b>Backtest verdict:</b> {e(model)} with daily check "
                f"{'beats both' if ok else 'does <b>not</b> beat both'} FTSE trackers on risk-adjusted return (Sharpe "
                f"{v['model_sharpe']:.2f} vs FTSE 100 {v['ftse100_sharpe']:.2f} · FTSE 250 {v['ftse250_sharpe']:.2f}). "
-               "Treat this as a live experiment, not advice.</div>")
+               + (f"<br><b>Honesty check:</b> beats {v['beats_random_share']:.0%} of 20 random 10-stock portfolios run with the "
+                  f"same rules (typical random Sharpe {v['random_median_sharpe']:.2f}). It was picked as the best of "
+                  f"{v.get('models_compared', 6)} models, which flatters it, so treat any edge as unproven. "
+                  if v.get("beats_random_share") is not None else "")
+               + "Treat this as a live experiment, not advice.</div>")
 
     # ---------------- Holdings tab
     holdings = _table(results["holdings"], [
@@ -130,7 +134,9 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
     # ---------------- Backtest tab
     bt_html = ""
     if bt and bt.get("growth"):
-        key = [f"{model} · daily check", f"{model} · monthly", "Equal-weight (all)", "FTSE 100 tracker", "FTSE 250 tracker"]
+        key = [f"{model} · daily check", f"{model} · monthly", "Random 10 stocks (typical)", "Equal-weight (all)",
+               "FTSE 100 tracker", "FTSE 250 tracker"]
+        key = [k for k in key if k in bt["growth"]]
         g = go.Figure()
         for s, series in bt["growth"].items():
             c, d = line_style(s)
@@ -148,7 +154,7 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
             "Monthly and Daily check use the tax rule (swap only if the expected gain beats the ~0.7% cost); "
             "“No tax rule” is the daily check without it.</p></div>")
         lab = lambda s: (SHORT.get(s.split(" · ")[0], s) + (" d" if "daily" in s else " m")) if " · " in s else \
-            {"Equal-weight (all)": "EqW", "FTSE 100 tracker": "F100", "FTSE 250 tracker": "F250"}.get(s, s)
+            {"Equal-weight (all)": "EqW", "FTSE 100 tracker": "F100", "FTSE 250 tracker": "F250", "Random 10 stocks (typical)": "Rand"}.get(s, s)
         years = sorted({y for s in key for y in bt["yearly"].get(s, {})})
         z = [[bt["yearly"][s].get(y) for s in key] for y in years]
         hm = go.Figure(go.Heatmap(z=z, y=years, x=[lab(s) for s in key], zmid=0, zmin=-0.4, zmax=0.4,

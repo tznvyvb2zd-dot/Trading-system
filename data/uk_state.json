@@ -1,0 +1,196 @@
+{
+  "cash_gbp": 0.0,
+  "positions": {
+    "CMCX.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 687.0,
+      "entry_px": 687.0,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 6.87,
+      "rank_today": 4,
+      "sector": "Financial Services"
+    },
+    "TATE.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 561.5,
+      "entry_px": 561.5,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 5.615,
+      "rank_today": 2,
+      "sector": "Food Producers"
+    },
+    "PTEC.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 351.6000061035156,
+      "entry_px": 351.6000061035156,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 3.516000061035156,
+      "rank_today": 12,
+      "sector": "Software & Computer Services"
+    },
+    "GLEN.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 491.45001220703125,
+      "entry_px": 491.45001220703125,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 4.914500122070312,
+      "rank_today": 13,
+      "sector": "Industrial Metals and Mining"
+    },
+    "MNTN.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 2.109999895095825,
+      "entry_px": 2.109999895095825,
+      "entry_date": "2026-11-17",
+      "currency": "USD",
+      "px_gbp": 2.109999895095825,
+      "rank_today": 9,
+      "sector": "Investment Trusts"
+    },
+    "RIO.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 6053.0,
+      "entry_px": 6053.0,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 60.53,
+      "rank_today": 20,
+      "sector": "Industrial Metals and Mining"
+    },
+    "MTO.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 207.39999389648438,
+      "entry_px": 207.39999389648438,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 2.073999938964844,
+      "rank_today": 3,
+      "sector": "Support Services"
+    },
+    "ROR.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 493.20001220703125,
+      "entry_px": 493.20001220703125,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 4.9320001220703125,
+      "rank_today": 1,
+      "sector": "Industrial Engineering"
+    },
+    "HSBA.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 1319.800048828125,
+      "entry_px": 1319.800048828125,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 13.19800048828125,
+      "rank_today": 16,
+      "sector": "Banks"
+    },
+    "HANA.L": {
+      "value_gbp": 9.940357852882704,
+      "last_px": 322.0,
+      "entry_px": 322.0,
+      "entry_date": "2026-11-17",
+      "currency": "GBp",
+      "px_gbp": 3.22,
+      "rank_today": 7,
+      "sector": "Investment Trusts"
+    }
+  },
+  "bench_units": {
+    "FTSE 100 tracker": 0.09584051912990567,
+    "FTSE 250 tracker": 0.04435573297848747
+  },
+  "start_date": "2026-11-17",
+  "last_rebalance": "2026-11-17",
+  "model": "Ensemble",
+  "last_trades": [
+    {
+      "date": "2026-11-17",
+      "ticker": "CMCX.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "TATE.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "PTEC.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "GLEN.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "MNTN.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "RIO.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "MTO.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "ROR.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "HSBA.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    },
+    {
+      "date": "2026-11-17",
+      "ticker": "HANA.L",
+      "action": "BUY",
+      "change_gbp": 9.94,
+      "cost_gbp": 0.06,
+      "why": "monthly re-pick"
+    }
+  ],
+  "last_trade_date": "2026-11-17",
+  "last_date": "2026-11-17"
+}

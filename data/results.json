@@ -1,127 +1,127 @@
 {
   "market": "UK (FTSE 350)",
-  "generated_at_utc": "2026-11-18 03:47",
-  "market_date": "2026-11-16",
+  "generated_at_utc": "2026-11-18 10:22",
+  "market_date": "2026-11-17",
   "model": "Ensemble",
   "buffer_rank": 50,
   "paper": {
     "start_date": "2026-11-17",
     "start_value_gbp": 100.0,
-    "value_gbp": 100.39,
+    "value_gbp": 99.4,
     "cash_gbp": 0.0,
-    "return_since_start": 0.0039,
+    "return_since_start": -0.006,
     "benchmarks": {
       "FTSE 100 tracker": {
-        "value_gbp": 101.33,
-        "return_since_start": 0.0133
+        "value_gbp": 100.0,
+        "return_since_start": 0.0
       },
       "FTSE 250 tracker": {
-        "value_gbp": 101.02,
-        "return_since_start": 0.0102
+        "value_gbp": 100.0,
+        "return_since_start": 0.0
       }
     },
-    "day_change": -0.0
+    "day_change": null
   },
   "holdings": [
     {
       "ticker": "ROR.L",
       "sector": "Industrial Engineering",
-      "value_gbp": 9.93,
+      "value_gbp": 9.94,
       "rank_today": 1,
-      "return_since_entry": -0.0008,
+      "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
-      "price_gbp": 4.93,
-      "shares": 2.0147
+      "price_gbp": 4.932,
+      "shares": 2.0155
     },
     {
       "ticker": "TATE.L",
       "sector": "Food Producers",
-      "value_gbp": 9.92,
+      "value_gbp": 9.94,
       "rank_today": 2,
-      "return_since_entry": -0.0016,
+      "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
       "price_gbp": 5.615,
-      "shares": 1.7675
-    },
-    {
-      "ticker": "DCC.L",
-      "sector": "Industrial Support Services",
-      "value_gbp": 10.08,
-      "rank_today": 3,
-      "return_since_entry": 0.0,
-      "entry_date": "2026-11-16",
-      "price_gbp": 64.6,
-      "shares": 0.156
-    },
-    {
-      "ticker": "BOY.L",
-      "sector": "Industrial Engineering",
-      "value_gbp": 10.03,
-      "rank_today": 4,
-      "return_since_entry": 0.0,
-      "entry_date": "2026-11-16",
-      "price_gbp": 9.195,
-      "shares": 1.0903
+      "shares": 1.7703
     },
     {
       "ticker": "MTO.L",
       "sector": "Support Services",
-      "value_gbp": 9.99,
-      "rank_today": 5,
-      "return_since_entry": 0.0048,
+      "value_gbp": 9.94,
+      "rank_today": 3,
+      "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
-      "price_gbp": 2.088,
-      "shares": 4.7836
+      "price_gbp": 2.074,
+      "shares": 4.7928
     },
     {
       "ticker": "CMCX.L",
       "sector": "Financial Services",
-      "value_gbp": 10.07,
-      "rank_today": 6,
-      "return_since_entry": 0.0129,
+      "value_gbp": 9.94,
+      "rank_today": 4,
+      "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
-      "price_gbp": 7.06,
-      "shares": 1.4262
+      "price_gbp": 6.87,
+      "shares": 1.4469
+    },
+    {
+      "ticker": "HANA.L",
+      "sector": "Investment Trusts",
+      "value_gbp": 9.94,
+      "rank_today": 7,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-17",
+      "price_gbp": 3.22,
+      "shares": 3.0871
     },
     {
       "ticker": "MNTN.L",
       "sector": "Investment Trusts",
       "value_gbp": 9.94,
-      "rank_today": 8,
+      "rank_today": 9,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
-      "price_gbp": 2.12,
-      "shares": 4.6888
-    },
-    {
-      "ticker": "ZIG.L",
-      "sector": "Support Services",
-      "value_gbp": 10.06,
-      "rank_today": 12,
-      "return_since_entry": 0.012,
-      "entry_date": "2026-11-17",
-      "price_gbp": 4.625,
-      "shares": 2.1751
-    },
-    {
-      "ticker": "AAL.L",
-      "sector": "Industrial Metals and Mining",
-      "value_gbp": 10.07,
-      "rank_today": 16,
-      "return_since_entry": 0.0129,
-      "entry_date": "2026-11-17",
-      "price_gbp": 36.05,
-      "shares": 0.2793
+      "price_gbp": 2.11,
+      "shares": 4.7111
     },
     {
       "ticker": "PTEC.L",
       "sector": "Software & Computer Services",
-      "value_gbp": 10.31,
-      "rank_today": 22,
-      "return_since_entry": 0.0368,
+      "value_gbp": 9.94,
+      "rank_today": 12,
+      "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
-      "price_gbp": 3.606,
-      "shares": 2.8581
+      "price_gbp": 3.516,
+      "shares": 2.8272
+    },
+    {
+      "ticker": "GLEN.L",
+      "sector": "Industrial Metals and Mining",
+      "value_gbp": 9.94,
+      "rank_today": 13,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-17",
+      "price_gbp": 4.9145,
+      "shares": 2.0227
+    },
+    {
+      "ticker": "HSBA.L",
+      "sector": "Banks",
+      "value_gbp": 9.94,
+      "rank_today": 16,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-17",
+      "price_gbp": 13.198,
+      "shares": 0.7532
+    },
+    {
+      "ticker": "RIO.L",
+      "sector": "Industrial Metals and Mining",
+      "value_gbp": 9.94,
+      "rank_today": 20,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-17",
+      "price_gbp": 60.53,
+      "shares": 0.1642
     }
   ],
   "watchlist": [
@@ -129,167 +129,263 @@
       "ticker": "ROR.L",
       "rank": 1,
       "sector": "Industrial Engineering",
-      "score": 0.5417
+      "score": 0.5463
     },
     {
       "ticker": "TATE.L",
       "rank": 2,
       "sector": "Food Producers",
-      "score": 0.5399
-    },
-    {
-      "ticker": "DCC.L",
-      "rank": 3,
-      "sector": "Industrial Support Services",
-      "score": 0.5357
-    },
-    {
-      "ticker": "BOY.L",
-      "rank": 4,
-      "sector": "Industrial Engineering",
-      "score": 0.5341
+      "score": 0.5451
     },
     {
       "ticker": "MTO.L",
-      "rank": 5,
+      "rank": 3,
       "sector": "Support Services",
-      "score": 0.5331
+      "score": 0.5359
     },
     {
       "ticker": "CMCX.L",
-      "rank": 6,
+      "rank": 4,
       "sector": "Financial Services",
-      "score": 0.5329
+      "score": 0.5345
+    },
+    {
+      "ticker": "DCC.L",
+      "rank": 5,
+      "sector": "Industrial Support Services",
+      "score": 0.533
     },
     {
       "ticker": "EZJ.L",
-      "rank": 7,
+      "rank": 6,
       "sector": "Travel and Leisure",
-      "score": 0.532
-    },
-    {
-      "ticker": "MNTN.L",
-      "rank": 8,
-      "sector": "Investment Trusts",
-      "score": 0.531
+      "score": 0.5325
     },
     {
       "ticker": "HANA.L",
+      "rank": 7,
+      "sector": "Investment Trusts",
+      "score": 0.5312
+    },
+    {
+      "ticker": "BOY.L",
+      "rank": 8,
+      "sector": "Industrial Engineering",
+      "score": 0.5306
+    },
+    {
+      "ticker": "MNTN.L",
       "rank": 9,
       "sector": "Investment Trusts",
-      "score": 0.5292
+      "score": 0.5301
     },
     {
       "ticker": "ITRK.L",
       "rank": 10,
       "sector": "Industrial Support Services",
-      "score": 0.5248
-    },
-    {
-      "ticker": "TCAP.L",
-      "rank": 11,
-      "sector": "Support Services",
-      "score": 0.522
+      "score": 0.527
     },
     {
       "ticker": "ZIG.L",
-      "rank": 12,
+      "rank": 11,
       "sector": "Support Services",
-      "score": 0.5211
+      "score": 0.5255
+    },
+    {
+      "ticker": "PTEC.L",
+      "rank": 12,
+      "sector": "Software & Computer Services",
+      "score": 0.5255
+    },
+    {
+      "ticker": "GLEN.L",
+      "rank": 13,
+      "sector": "Industrial Metals and Mining",
+      "score": 0.5242
+    },
+    {
+      "ticker": "TCAP.L",
+      "rank": 14,
+      "sector": "Support Services",
+      "score": 0.5241
     },
     {
       "ticker": "SGRO.L",
-      "rank": 13,
-      "sector": "Real Estate Investment Trusts",
-      "score": 0.5203
-    },
-    {
-      "ticker": "MOON.L",
-      "rank": 14,
-      "sector": "Retailers",
-      "score": 0.52
-    },
-    {
-      "ticker": "SDLF.L",
       "rank": 15,
-      "sector": "Life Insurance",
-      "score": 0.5199
+      "sector": "Real Estate Investment Trusts",
+      "score": 0.5226
     }
   ],
   "smooth_days": 10,
   "max_swaps_per_day": 2,
   "today": {
-    "type": "daily check",
+    "type": "monthly re-pick",
     "trades": [
       {
-        "date": "2026-11-16",
-        "ticker": "PNN.L",
-        "action": "SELL",
-        "change_gbp": -10.15,
-        "cost_gbp": 0.01,
-        "why": "10-day smoothed rank fell below 50"
-      },
-      {
-        "date": "2026-11-16",
-        "ticker": "DCC.L",
+        "date": "2026-11-17",
+        "ticker": "CMCX.L",
         "action": "BUY",
-        "change_gbp": 10.08,
+        "change_gbp": 9.94,
         "cost_gbp": 0.06,
-        "why": "replacement"
+        "why": "monthly re-pick"
       },
       {
-        "date": "2026-11-16",
-        "ticker": "FEML.L",
-        "action": "SELL",
-        "change_gbp": -10.1,
-        "cost_gbp": 0.01,
-        "why": "10-day smoothed rank fell below 50"
-      },
-      {
-        "date": "2026-11-16",
-        "ticker": "BOY.L",
+        "date": "2026-11-17",
+        "ticker": "TATE.L",
         "action": "BUY",
-        "change_gbp": 10.03,
+        "change_gbp": 9.94,
         "cost_gbp": 0.06,
-        "why": "replacement"
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "PTEC.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "GLEN.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "MNTN.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "RIO.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "MTO.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "ROR.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "HSBA.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "HANA.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
       }
     ],
     "drop_alerts": []
   },
   "last_trades": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "trades": [
       {
-        "date": "2026-11-16",
-        "ticker": "PNN.L",
-        "action": "SELL",
-        "change_gbp": -10.15,
-        "cost_gbp": 0.01,
-        "why": "10-day smoothed rank fell below 50"
-      },
-      {
-        "date": "2026-11-16",
-        "ticker": "DCC.L",
+        "date": "2026-11-17",
+        "ticker": "CMCX.L",
         "action": "BUY",
-        "change_gbp": 10.08,
+        "change_gbp": 9.94,
         "cost_gbp": 0.06,
-        "why": "replacement"
+        "why": "monthly re-pick"
       },
       {
-        "date": "2026-11-16",
-        "ticker": "FEML.L",
-        "action": "SELL",
-        "change_gbp": -10.1,
-        "cost_gbp": 0.01,
-        "why": "10-day smoothed rank fell below 50"
-      },
-      {
-        "date": "2026-11-16",
-        "ticker": "BOY.L",
+        "date": "2026-11-17",
+        "ticker": "TATE.L",
         "action": "BUY",
-        "change_gbp": 10.03,
+        "change_gbp": 9.94,
         "cost_gbp": 0.06,
-        "why": "replacement"
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "PTEC.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "GLEN.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "MNTN.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "RIO.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "MTO.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "ROR.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "HSBA.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
+      },
+      {
+        "date": "2026-11-17",
+        "ticker": "HANA.L",
+        "action": "BUY",
+        "change_gbp": 9.94,
+        "cost_gbp": 0.06,
+        "why": "monthly re-pick"
       }
     ]
   },
@@ -303,211 +399,218 @@
     ],
     "auc": {
       "Logistic regression": 0.509,
-      "LightGBM": 0.5115,
-      "Ensemble": 0.5124,
+      "LightGBM": 0.5112,
+      "Ensemble": 0.5122,
       "LR + earnings": 0.5078,
-      "LightGBM + earnings": 0.5122,
-      "Ensemble + earnings": 0.5124,
+      "LightGBM + earnings": 0.5124,
+      "Ensemble + earnings": 0.5125,
       "Momentum rule": 0.4976
     },
     "table": {
       "Logistic regression \u00b7 monthly": {
-        "CAGR": 0.0555,
-        "Volatility": 0.236,
-        "Sharpe": 0.3472,
-        "Max drawdown": -0.5958,
-        "\u00a3100 grew to": 223.8994
+        "CAGR": 0.0534,
+        "Volatility": 0.2362,
+        "Sharpe": 0.3386,
+        "Max drawdown": -0.6052,
+        "\u00a3100 grew to": 217.3265
       },
       "Logistic regression \u00b7 daily check": {
-        "CAGR": 0.0266,
-        "Volatility": 0.242,
-        "Sharpe": 0.23,
-        "Max drawdown": -0.717,
-        "\u00a3100 grew to": 147.9239
+        "CAGR": 0.0192,
+        "Volatility": 0.2416,
+        "Sharpe": 0.2006,
+        "Max drawdown": -0.7325,
+        "\u00a3100 grew to": 132.8003
       },
       "LightGBM \u00b7 monthly": {
-        "CAGR": 0.0183,
-        "Volatility": 0.1956,
-        "Sharpe": 0.1906,
-        "Max drawdown": -0.4589,
-        "\u00a3100 grew to": 131.0611
+        "CAGR": 0.0253,
+        "Volatility": 0.1961,
+        "Sharpe": 0.2252,
+        "Max drawdown": -0.4336,
+        "\u00a3100 grew to": 145.0693
       },
       "LightGBM \u00b7 daily check": {
-        "CAGR": 0.0125,
-        "Volatility": 0.1988,
-        "Sharpe": 0.1617,
-        "Max drawdown": -0.4712,
-        "\u00a3100 grew to": 120.3117
+        "CAGR": -0.0089,
+        "Volatility": 0.194,
+        "Sharpe": 0.0509,
+        "Max drawdown": -0.4423,
+        "\u00a3100 grew to": 87.5419
       },
       "Ensemble \u00b7 monthly": {
-        "CAGR": 0.0327,
-        "Volatility": 0.2052,
-        "Sharpe": 0.2594,
-        "Max drawdown": -0.4127,
-        "\u00a3100 grew to": 161.5392
+        "CAGR": 0.034,
+        "Volatility": 0.206,
+        "Sharpe": 0.2656,
+        "Max drawdown": -0.4324,
+        "\u00a3100 grew to": 164.6952
       },
       "Ensemble \u00b7 daily check": {
-        "CAGR": 0.0337,
-        "Volatility": 0.2128,
-        "Sharpe": 0.2628,
-        "Max drawdown": -0.515,
-        "\u00a3100 grew to": 164.0308
+        "CAGR": 0.035,
+        "Volatility": 0.2089,
+        "Sharpe": 0.2693,
+        "Max drawdown": -0.5606,
+        "\u00a3100 grew to": 167.0456
       },
       "LR + earnings \u00b7 monthly": {
-        "CAGR": 0.0364,
-        "Volatility": 0.2354,
-        "Sharpe": 0.2697,
+        "CAGR": 0.0352,
+        "Volatility": 0.2348,
+        "Sharpe": 0.2648,
         "Max drawdown": -0.593,
-        "\u00a3100 grew to": 170.3855
+        "\u00a3100 grew to": 167.437
       },
       "LR + earnings \u00b7 daily check": {
-        "CAGR": 0.0048,
-        "Volatility": 0.243,
-        "Sharpe": 0.1418,
-        "Max drawdown": -0.7572,
-        "\u00a3100 grew to": 107.4276
+        "CAGR": 0.0032,
+        "Volatility": 0.2377,
+        "Sharpe": 0.1333,
+        "Max drawdown": -0.7225,
+        "\u00a3100 grew to": 104.8875
       },
       "LightGBM + earnings \u00b7 monthly": {
-        "CAGR": 0.017,
-        "Volatility": 0.1912,
-        "Sharpe": 0.1837,
-        "Max drawdown": -0.393,
-        "\u00a3100 grew to": 128.5674
+        "CAGR": 0.0237,
+        "Volatility": 0.1909,
+        "Sharpe": 0.2182,
+        "Max drawdown": -0.4044,
+        "\u00a3100 grew to": 141.7467
       },
       "LightGBM + earnings \u00b7 daily check": {
-        "CAGR": 0.0128,
-        "Volatility": 0.1949,
-        "Sharpe": 0.1623,
-        "Max drawdown": -0.517,
-        "\u00a3100 grew to": 120.8248
+        "CAGR": 0.0095,
+        "Volatility": 0.1924,
+        "Sharpe": 0.1452,
+        "Max drawdown": -0.5233,
+        "\u00a3100 grew to": 115.0833
       },
       "Ensemble + earnings \u00b7 monthly": {
-        "CAGR": 0.0075,
-        "Volatility": 0.2067,
-        "Sharpe": 0.1394,
-        "Max drawdown": -0.5013,
-        "\u00a3100 grew to": 111.7623
+        "CAGR": 0.0183,
+        "Volatility": 0.2097,
+        "Sharpe": 0.191,
+        "Max drawdown": -0.496,
+        "\u00a3100 grew to": 131.0445
       },
       "Ensemble + earnings \u00b7 daily check": {
-        "CAGR": 0.0016,
-        "Volatility": 0.213,
-        "Sharpe": 0.1148,
-        "Max drawdown": -0.5903,
-        "\u00a3100 grew to": 102.4324
+        "CAGR": 0.0136,
+        "Volatility": 0.2109,
+        "Sharpe": 0.1696,
+        "Max drawdown": -0.5575,
+        "\u00a3100 grew to": 122.3977
       },
       "Momentum rule \u00b7 monthly": {
-        "CAGR": -0.0139,
+        "CAGR": -0.0142,
         "Volatility": 0.2049,
-        "Sharpe": 0.0347,
+        "Sharpe": 0.0333,
         "Max drawdown": -0.7125,
-        "\u00a3100 grew to": 81.1313
+        "\u00a3100 grew to": 80.7841
       },
       "Momentum rule \u00b7 daily check": {
-        "CAGR": -0.0184,
-        "Volatility": 0.1991,
-        "Sharpe": 0.0068,
-        "Max drawdown": -0.6717,
-        "\u00a3100 grew to": 75.8383
+        "CAGR": -0.0178,
+        "Volatility": 0.1971,
+        "Sharpe": 0.0075,
+        "Max drawdown": -0.6343,
+        "\u00a3100 grew to": 76.4457
       },
       "Equal-weight (all)": {
-        "CAGR": 0.0663,
+        "CAGR": 0.0661,
         "Volatility": 0.1496,
-        "Sharpe": 0.5043,
+        "Sharpe": 0.5028,
         "Max drawdown": -0.3916,
-        "\u00a3100 grew to": 260.5779
+        "\u00a3100 grew to": 259.7401
       },
       "FTSE 100 tracker": {
-        "CAGR": 0.046,
+        "CAGR": 0.0457,
         "Volatility": 0.1486,
-        "Sharpe": 0.3772,
+        "Sharpe": 0.375,
         "Max drawdown": -0.3729,
-        "\u00a3100 grew to": 195.5326
+        "\u00a3100 grew to": 194.5845
       },
       "FTSE 250 tracker": {
-        "CAGR": 0.0571,
+        "CAGR": 0.0569,
         "Volatility": 0.1565,
-        "Sharpe": 0.4336,
+        "Sharpe": 0.4321,
         "Max drawdown": -0.4183,
-        "\u00a3100 grew to": 229.0108
+        "\u00a3100 grew to": 228.2515
       }
     },
     "coverage": {
-      "2010": 0.62,
-      "2011": 0.635,
-      "2012": 0.642,
-      "2013": 0.66,
-      "2014": 0.664,
-      "2015": 0.673,
-      "2016": 0.695,
-      "2017": 0.72,
-      "2018": 0.75,
-      "2019": 0.78,
-      "2020": 0.804,
-      "2021": 0.833,
-      "2022": 0.862,
-      "2023": 0.883,
-      "2024": 0.903,
-      "2025": 0.94,
-      "2026": 0.985
+      "2010": 0.566,
+      "2011": 0.579,
+      "2012": 0.588,
+      "2013": 0.605,
+      "2014": 0.617,
+      "2015": 0.63,
+      "2016": 0.654,
+      "2017": 0.686,
+      "2018": 0.72,
+      "2019": 0.757,
+      "2020": 0.789,
+      "2021": 0.828,
+      "2022": 0.859,
+      "2023": 0.881,
+      "2024": 0.9,
+      "2025": 0.937,
+      "2026": 0.979
     },
     "earnings_coverage": 0.148928266853879,
     "daily_vs_monthly": [
       {
         "model": "Logistic regression",
-        "sharpe_monthly": 0.3472,
-        "sharpe_daily": 0.23,
-        "cagr_monthly": 0.0555,
-        "cagr_daily": 0.0266
+        "sharpe_monthly": 0.3386,
+        "sharpe_daily": 0.2006,
+        "sharpe_daily_no_drop_rule": 0.2474,
+        "cagr_monthly": 0.0534,
+        "cagr_daily": 0.0192
       },
       {
         "model": "LightGBM",
-        "sharpe_monthly": 0.1906,
-        "sharpe_daily": 0.1617,
-        "cagr_monthly": 0.0183,
-        "cagr_daily": 0.0125
+        "sharpe_monthly": 0.2252,
+        "sharpe_daily": 0.0509,
+        "sharpe_daily_no_drop_rule": 0.0511,
+        "cagr_monthly": 0.0253,
+        "cagr_daily": -0.0089
       },
       {
         "model": "Ensemble",
-        "sharpe_monthly": 0.2594,
-        "sharpe_daily": 0.2628,
-        "cagr_monthly": 0.0327,
-        "cagr_daily": 0.0337
+        "sharpe_monthly": 0.2656,
+        "sharpe_daily": 0.2693,
+        "sharpe_daily_no_drop_rule": 0.2572,
+        "cagr_monthly": 0.034,
+        "cagr_daily": 0.035
       },
       {
         "model": "LR + earnings",
-        "sharpe_monthly": 0.2697,
-        "sharpe_daily": 0.1418,
-        "cagr_monthly": 0.0364,
-        "cagr_daily": 0.0048
+        "sharpe_monthly": 0.2648,
+        "sharpe_daily": 0.1333,
+        "sharpe_daily_no_drop_rule": 0.1522,
+        "cagr_monthly": 0.0352,
+        "cagr_daily": 0.0032
       },
       {
         "model": "LightGBM + earnings",
-        "sharpe_monthly": 0.1837,
-        "sharpe_daily": 0.1623,
-        "cagr_monthly": 0.017,
-        "cagr_daily": 0.0128
+        "sharpe_monthly": 0.2182,
+        "sharpe_daily": 0.1452,
+        "sharpe_daily_no_drop_rule": 0.1842,
+        "cagr_monthly": 0.0237,
+        "cagr_daily": 0.0095
       },
       {
         "model": "Ensemble + earnings",
-        "sharpe_monthly": 0.1394,
-        "sharpe_daily": 0.1148,
-        "cagr_monthly": 0.0075,
-        "cagr_daily": 0.0016
+        "sharpe_monthly": 0.191,
+        "sharpe_daily": 0.1696,
+        "sharpe_daily_no_drop_rule": 0.1104,
+        "cagr_monthly": 0.0183,
+        "cagr_daily": 0.0136
       },
       {
         "model": "Momentum rule",
-        "sharpe_monthly": 0.0347,
-        "sharpe_daily": 0.0068,
-        "cagr_monthly": -0.0139,
-        "cagr_daily": -0.0184
+        "sharpe_monthly": 0.0333,
+        "sharpe_daily": 0.0075,
+        "sharpe_daily_no_drop_rule": 0.0059,
+        "cagr_monthly": -0.0142,
+        "cagr_daily": -0.0178
       }
     ]
   },
   "verdict": {
-    "model_sharpe": 0.2628,
-    "ftse100_sharpe": 0.3772,
-    "ftse250_sharpe": 0.4336,
-    "equal_weight_sharpe": 0.5043,
+    "model_sharpe": 0.2693,
+    "ftse100_sharpe": 0.375,
+    "ftse250_sharpe": 0.4321,
+    "equal_weight_sharpe": 0.5028,
     "beats_ftse100": false,
     "beats_ftse250": false
   },
@@ -516,5 +619,12 @@
     "sell_bps": 10,
     "note": "0.5% stamp duty + spread on UK buys"
   },
-  "disclaimer": "Paper trading / research only. Not financial advice."
+  "disclaimer": "Paper trading / research only. Not financial advice.",
+  "my_portfolio": {
+    "amount_gbp": 85.59,
+    "start_date": "2026-11-18",
+    "value_gbp": 85.59,
+    "return": 0.0,
+    "tracking": false
+  }
 }

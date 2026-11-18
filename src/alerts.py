@@ -19,6 +19,10 @@ from trading_system import BUFFER_RANK, DATA, DROP_DAY, DROP_TOTAL  # noqa: E402
 
 
 def main():
+    from zoneinfo import ZoneInfo
+    now = datetime.now(ZoneInfo("Europe/London"))
+    if now.weekday() >= 5 or not ((8, 0) <= (now.hour, now.minute) <= (16, 45)):
+        print(f"London market closed ({now:%a %H:%M}); GitHub ran this late, so skipping"); return
     state_path = DATA / "uk_state.json"
     if not state_path.exists():
         print("no portfolio yet"); return

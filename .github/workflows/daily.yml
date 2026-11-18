@@ -2,7 +2,7 @@ name: Daily trading run
 
 on:
   schedule:
-    - cron: "30 22 * * 1-5"     # 22:30 UTC Mon-Fri (after the US market closes)
+    - cron: "47 21 * * 1-5"     # ~21:47 UTC Mon-Fri, after London closes (off-peak minute: GitHub delays :00 jobs)
   workflow_dispatch:             # "Run workflow" button in the Actions tab
     inputs:
       force_rebalance:

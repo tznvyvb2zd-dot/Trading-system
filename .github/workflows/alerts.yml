@@ -2,7 +2,7 @@ name: Intraday drop alerts
 
 on:
   schedule:
-    - cron: "10 8-16 * * 1-5"     # hourly, 08:10-16:10 UTC Mon-Fri (London market hours)
+    - cron: "23,53 7-16 * * 1-5"  # every 30 min, London market hours (script skips if run late/out of hours)
   workflow_dispatch:
 
 permissions:

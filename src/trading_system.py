@@ -139,7 +139,24 @@ def market_data():
     dates = b[MARKET].dropna().index
     if AS_OF:
         dates = dates[dates <= pd.Timestamp(AS_OF)]
+    else:
+        from zoneinfo import ZoneInfo
+        now = datetime.now(ZoneInfo("Europe/London"))
+        if len(dates) and dates[-1].date() >= now.date() and (now.hour, now.minute) < (16, 45):
+            dates = dates[dates.date < now.date()]          # London still open: today's bar isn't a close yet
     return dates, b.reindex(dates).ffill()
+
+
+def my_portfolio(nav):
+    """Your real amount (docs/my_portfolio.json) grown in line with the paper portfolio since your start date."""
+    cfg = read_json(DOCS / "my_portfolio.json", {})
+    amt, start = float(cfg.get("amount_gbp") or 0), str(cfg.get("start_date") or "")
+    if not amt:
+        return None
+    since = nav[nav["date"] >= start]
+    value = amt * float(since["portfolio_gbp"].iloc[-1] / since["portfolio_gbp"].iloc[0]) if len(since) else amt
+    return {"amount_gbp": amt, "start_date": start, "value_gbp": round(value, 2),
+            "return": round(value / amt - 1, 4), "tracking": len(since) > 0}
 
 
 # ---------------------------------------------------------------- features
@@ -467,6 +484,19 @@ def main():
 
     mask_all, all_tickers, sector_of = load_membership(dates)
     raw_c, raw_v = download_all(all_tickers)
+    # only use a day once most index members have a price for it (Yahoo sometimes lags for London stocks)
+    while len(dates) > 300:
+        live = mask_all.columns[mask_all.loc[dates[-1]].values]
+        live = [t for t in live if t in raw_c.columns]
+        if raw_c.reindex([dates[-1]])[live].notna().mean(axis=1).iloc[0] >= 0.5:
+            break
+        log(f"{dates[-1].date()}: most prices missing, using the previous day")
+        dates = dates[:-1]
+    bench, mask_all = bench.reindex(dates), mask_all.reindex(dates)
+    today = dates[-1].strftime("%Y-%m-%d")
+    if state.get("last_date") and today <= state["last_date"] and not FORCE_REBALANCE:
+        log(f"no new market day since {state['last_date']} (latest {today}): nothing to do")
+        return
     raw_c = clean_prices(raw_c.reindex(dates))
     raw_v = raw_v.reindex(dates)
     have = [t for t in all_tickers if t in raw_c.columns and raw_c[t].notna().sum() > 300]
@@ -600,6 +630,7 @@ def main():
     row = {"date": today, "portfolio_gbp": round(value, 4), **{k: round(v, 4) for k, v in bvals.items()}}
     nav = pd.concat([nav[nav["date"] != today] if len(nav) else nav, pd.DataFrame([row])], ignore_index=True).sort_values("date")
     nav.to_csv(nav_path, index=False)
+    state["last_date"] = today
     write_json(state_path, state)
 
     prev = nav.iloc[-2] if len(nav) > 1 else None
@@ -634,6 +665,7 @@ def main():
                     "beats_ftse250": table[key]["Sharpe"] > table["FTSE 250 tracker"]["Sharpe"]},
         "costs": {"buy_bps": BUY_COST_BPS, "sell_bps": SELL_COST_BPS, "note": "0.5% stamp duty + spread on UK buys"},
         "disclaimer": "Paper trading / research only. Not financial advice.",
+        "my_portfolio": my_portfolio(nav),
     }
     write_json(DATA / "results.json", results)
     write_json(DOCS / "results.json", results)
@@ -670,9 +702,18 @@ def notify_evening(results, monthly, trades, alerts):
                      f"#{a['raw_rank']}: HOLD")
     if holds and not title:
         title, prio, tags = "⚠️ Big drop: hold for now", 4, ["warning"]
-    if title:
-        lines.append(f"Paper portfolio £{results['paper']['value_gbp']:.2f}. Open the dashboard for amounts at your size.")
-        send(title, "\n".join(lines), priority=prio, tags=tags)
+    mine = results.get("my_portfolio")
+    if not title:
+        return
+    if mine:
+        k = mine["value_gbp"] / results["paper"]["value_gbp"]
+        sized = [f"{t['action']} £{abs(t['change_gbp']) * k:.2f} of {nm(t['ticker'])}" for t in sells + buys]
+        if sized:
+            lines.append("At your size: " + "; ".join(sized))
+        lines.append(f"Your portfolio: £{mine['value_gbp']:.2f} ({mine['return']:+.1%} since {mine['start_date']}).")
+    else:
+        lines.append(f"Paper portfolio £{results['paper']['value_gbp']:.2f}. Open the dashboard for details.")
+    send(title, "\n".join(lines), priority=prio, tags=tags)
 
 
 if __name__ == "__main__":

@@ -1,127 +1,127 @@
 {
   "market": "UK (FTSE 350)",
-  "generated_at_utc": "2026-11-17 14:47",
-  "market_date": "2026-11-17",
+  "generated_at_utc": "2026-11-18 03:47",
+  "market_date": "2026-11-16",
   "model": "Ensemble",
   "buffer_rank": 50,
   "paper": {
     "start_date": "2026-11-17",
     "start_value_gbp": 100.0,
-    "value_gbp": 99.4,
+    "value_gbp": 100.39,
     "cash_gbp": 0.0,
-    "return_since_start": -0.006,
+    "return_since_start": 0.0039,
     "benchmarks": {
       "FTSE 100 tracker": {
-        "value_gbp": 100.0,
-        "return_since_start": 0.0
+        "value_gbp": 101.33,
+        "return_since_start": 0.0133
       },
       "FTSE 250 tracker": {
-        "value_gbp": 100.0,
-        "return_since_start": 0.0
+        "value_gbp": 101.02,
+        "return_since_start": 0.0102
       }
     },
-    "day_change": null
+    "day_change": -0.0
   },
   "holdings": [
     {
       "ticker": "ROR.L",
       "sector": "Industrial Engineering",
-      "value_gbp": 9.94,
+      "value_gbp": 9.93,
       "rank_today": 1,
-      "return_since_entry": 0.0,
+      "return_since_entry": -0.0008,
       "entry_date": "2026-11-17",
-      "price_gbp": 4.934,
+      "price_gbp": 4.93,
       "shares": 2.0147
     },
     {
       "ticker": "TATE.L",
       "sector": "Food Producers",
-      "value_gbp": 9.94,
+      "value_gbp": 9.92,
       "rank_today": 2,
-      "return_since_entry": 0.0,
+      "return_since_entry": -0.0016,
       "entry_date": "2026-11-17",
-      "price_gbp": 5.624,
+      "price_gbp": 5.615,
       "shares": 1.7675
+    },
+    {
+      "ticker": "DCC.L",
+      "sector": "Industrial Support Services",
+      "value_gbp": 10.08,
+      "rank_today": 3,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-16",
+      "price_gbp": 64.6,
+      "shares": 0.156
+    },
+    {
+      "ticker": "BOY.L",
+      "sector": "Industrial Engineering",
+      "value_gbp": 10.03,
+      "rank_today": 4,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-16",
+      "price_gbp": 9.195,
+      "shares": 1.0903
     },
     {
       "ticker": "MTO.L",
       "sector": "Support Services",
-      "value_gbp": 9.94,
-      "rank_today": 3,
-      "return_since_entry": 0.0,
+      "value_gbp": 9.99,
+      "rank_today": 5,
+      "return_since_entry": 0.0048,
       "entry_date": "2026-11-17",
-      "price_gbp": 2.078,
+      "price_gbp": 2.088,
       "shares": 4.7836
+    },
+    {
+      "ticker": "CMCX.L",
+      "sector": "Financial Services",
+      "value_gbp": 10.07,
+      "rank_today": 6,
+      "return_since_entry": 0.0129,
+      "entry_date": "2026-11-17",
+      "price_gbp": 7.06,
+      "shares": 1.4262
     },
     {
       "ticker": "MNTN.L",
       "sector": "Investment Trusts",
       "value_gbp": 9.94,
-      "rank_today": 7,
+      "rank_today": 8,
       "return_since_entry": 0.0,
       "entry_date": "2026-11-17",
       "price_gbp": 2.12,
       "shares": 4.6888
     },
     {
-      "ticker": "CMCX.L",
-      "sector": "Financial Services",
-      "value_gbp": 9.94,
-      "rank_today": 8,
-      "return_since_entry": 0.0,
-      "entry_date": "2026-11-17",
-      "price_gbp": 6.97,
-      "shares": 1.4262
-    },
-    {
       "ticker": "ZIG.L",
       "sector": "Support Services",
-      "value_gbp": 9.94,
-      "rank_today": 11,
-      "return_since_entry": 0.0,
-      "entry_date": "2026-11-17",
-      "price_gbp": 4.57,
-      "shares": 2.1751
-    },
-    {
-      "ticker": "PTEC.L",
-      "sector": "Software & Computer Services",
-      "value_gbp": 9.94,
+      "value_gbp": 10.06,
       "rank_today": 12,
-      "return_since_entry": 0.0,
+      "return_since_entry": 0.012,
       "entry_date": "2026-11-17",
-      "price_gbp": 3.478,
-      "shares": 2.8581
+      "price_gbp": 4.625,
+      "shares": 2.1751
     },
     {
       "ticker": "AAL.L",
       "sector": "Industrial Metals and Mining",
-      "value_gbp": 9.94,
-      "rank_today": 15,
-      "return_since_entry": 0.0,
+      "value_gbp": 10.07,
+      "rank_today": 16,
+      "return_since_entry": 0.0129,
       "entry_date": "2026-11-17",
-      "price_gbp": 35.59,
+      "price_gbp": 36.05,
       "shares": 0.2793
     },
     {
-      "ticker": "FEML.L",
-      "sector": "Investment Trusts",
-      "value_gbp": 9.94,
+      "ticker": "PTEC.L",
+      "sector": "Software & Computer Services",
+      "value_gbp": 10.31,
       "rank_today": 22,
-      "return_since_entry": 0.0,
+      "return_since_entry": 0.0368,
       "entry_date": "2026-11-17",
-      "price_gbp": 11.54,
-      "shares": 0.8614
-    },
-    {
-      "ticker": "PNN.L",
-      "sector": "Gas, Water & Multiutilities",
-      "value_gbp": 9.94,
-      "rank_today": 32,
-      "return_since_entry": 0.0,
-      "entry_date": "2026-11-17",
-      "price_gbp": 3.268,
-      "shares": 3.0417
+      "price_gbp": 3.606,
+      "shares": 2.8581
     }
   ],
   "watchlist": [
@@ -129,242 +129,167 @@
       "ticker": "ROR.L",
       "rank": 1,
       "sector": "Industrial Engineering",
-      "score": 0.5478
+      "score": 0.5417
     },
     {
       "ticker": "TATE.L",
       "rank": 2,
       "sector": "Food Producers",
-      "score": 0.5431
-    },
-    {
-      "ticker": "MTO.L",
-      "rank": 3,
-      "sector": "Support Services",
-      "score": 0.5348
+      "score": 0.5399
     },
     {
       "ticker": "DCC.L",
-      "rank": 4,
+      "rank": 3,
       "sector": "Industrial Support Services",
-      "score": 0.5345
+      "score": 0.5357
     },
     {
       "ticker": "BOY.L",
-      "rank": 5,
+      "rank": 4,
       "sector": "Industrial Engineering",
-      "score": 0.5336
+      "score": 0.5341
     },
     {
-      "ticker": "EZJ.L",
-      "rank": 6,
-      "sector": "Travel and Leisure",
-      "score": 0.5316
-    },
-    {
-      "ticker": "MNTN.L",
-      "rank": 7,
-      "sector": "Investment Trusts",
-      "score": 0.5308
+      "ticker": "MTO.L",
+      "rank": 5,
+      "sector": "Support Services",
+      "score": 0.5331
     },
     {
       "ticker": "CMCX.L",
-      "rank": 8,
+      "rank": 6,
       "sector": "Financial Services",
-      "score": 0.53
+      "score": 0.5329
     },
     {
-      "ticker": "ITRK.L",
-      "rank": 9,
-      "sector": "Industrial Support Services",
-      "score": 0.5275
+      "ticker": "EZJ.L",
+      "rank": 7,
+      "sector": "Travel and Leisure",
+      "score": 0.532
+    },
+    {
+      "ticker": "MNTN.L",
+      "rank": 8,
+      "sector": "Investment Trusts",
+      "score": 0.531
     },
     {
       "ticker": "HANA.L",
-      "rank": 10,
+      "rank": 9,
       "sector": "Investment Trusts",
-      "score": 0.5272
+      "score": 0.5292
     },
     {
-      "ticker": "ZIG.L",
-      "rank": 11,
-      "sector": "Support Services",
-      "score": 0.5256
-    },
-    {
-      "ticker": "PTEC.L",
-      "rank": 12,
-      "sector": "Software & Computer Services",
-      "score": 0.5228
+      "ticker": "ITRK.L",
+      "rank": 10,
+      "sector": "Industrial Support Services",
+      "score": 0.5248
     },
     {
       "ticker": "TCAP.L",
-      "rank": 13,
+      "rank": 11,
       "sector": "Support Services",
-      "score": 0.5221
+      "score": 0.522
+    },
+    {
+      "ticker": "ZIG.L",
+      "rank": 12,
+      "sector": "Support Services",
+      "score": 0.5211
     },
     {
       "ticker": "SGRO.L",
-      "rank": 14,
+      "rank": 13,
       "sector": "Real Estate Investment Trusts",
-      "score": 0.5213
+      "score": 0.5203
     },
     {
-      "ticker": "AAL.L",
+      "ticker": "MOON.L",
+      "rank": 14,
+      "sector": "Retailers",
+      "score": 0.52
+    },
+    {
+      "ticker": "SDLF.L",
       "rank": 15,
-      "sector": "Industrial Metals and Mining",
-      "score": 0.5208
+      "sector": "Life Insurance",
+      "score": 0.5199
     }
   ],
   "smooth_days": 10,
   "max_swaps_per_day": 2,
   "today": {
-    "type": "monthly re-pick",
+    "type": "daily check",
     "trades": [
       {
-        "date": "2026-11-17",
-        "ticker": "TATE.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "ROR.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "PTEC.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "CMCX.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "AAL.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "FEML.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "MTO.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "ZIG.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "MNTN.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
+        "date": "2026-11-16",
         "ticker": "PNN.L",
+        "action": "SELL",
+        "change_gbp": -10.15,
+        "cost_gbp": 0.01,
+        "why": "10-day smoothed rank fell below 50"
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "DCC.L",
         "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
+        "change_gbp": 10.08,
+        "cost_gbp": 0.06,
+        "why": "replacement"
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "FEML.L",
+        "action": "SELL",
+        "change_gbp": -10.1,
+        "cost_gbp": 0.01,
+        "why": "10-day smoothed rank fell below 50"
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "BOY.L",
+        "action": "BUY",
+        "change_gbp": 10.03,
+        "cost_gbp": 0.06,
+        "why": "replacement"
       }
-    ]
+    ],
+    "drop_alerts": []
   },
   "last_trades": {
-    "date": "2026-11-17",
+    "date": "2026-11-16",
     "trades": [
       {
-        "date": "2026-11-17",
-        "ticker": "TATE.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "ROR.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "PTEC.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "CMCX.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "AAL.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "FEML.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "MTO.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "ZIG.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "MNTN.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
-      },
-      {
-        "date": "2026-11-17",
+        "date": "2026-11-16",
         "ticker": "PNN.L",
+        "action": "SELL",
+        "change_gbp": -10.15,
+        "cost_gbp": 0.01,
+        "why": "10-day smoothed rank fell below 50"
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "DCC.L",
         "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06
+        "change_gbp": 10.08,
+        "cost_gbp": 0.06,
+        "why": "replacement"
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "FEML.L",
+        "action": "SELL",
+        "change_gbp": -10.1,
+        "cost_gbp": 0.01,
+        "why": "10-day smoothed rank fell below 50"
+      },
+      {
+        "date": "2026-11-16",
+        "ticker": "BOY.L",
+        "action": "BUY",
+        "change_gbp": 10.03,
+        "cost_gbp": 0.06,
+        "why": "replacement"
       }
     ]
   },

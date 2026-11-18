@@ -35,8 +35,13 @@ def collect(shard, n=N_SHARDS):
     OUT.mkdir(parents=True, exist_ok=True)
     q = pd.read_csv(ROOT / "research" / "news_queries.csv")
     q = q.iloc[shard::n]
-    rows, failed = [], []
+    path = OUT / f"news_{shard}.csv.gz"
+    rows = [pd.read_csv(path, parse_dates=["date"])] if path.exists() else []        # resume
+    done = set(rows[0].ticker) if rows else set()
+    failed = []
     for i, (t, query) in enumerate(zip(q.ticker, q["query"])):
+        if t in done:
+            continue
         tone = fetch(query, "timelinetone"); time.sleep(8)
         vol = fetch(query, "timelinevolraw"); time.sleep(8)
         if tone is None or vol is None:
@@ -46,6 +51,8 @@ def collect(shard, n=N_SHARDS):
         df["ticker"] = t
         rows.append(df.rename_axis("date").reset_index())
         print(f"[{shard}] {i + 1}/{len(q)} {t} {query}: {len(df)} days", flush=True)
+        if len(rows) % 5 == 0:                                    # save progress as we go
+            pd.concat(rows).to_csv(path, index=False)
     out = pd.concat(rows) if rows else pd.DataFrame(columns=["date", "tone", "articles", "ticker"])
     out.to_csv(OUT / f"news_{shard}.csv.gz", index=False)
     pd.Series(failed, dtype=str).to_csv(OUT / f"failed_{shard}.csv", index=False)

@@ -26,9 +26,11 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt requests
       - run: python src/${{ inputs.script }}
+        timeout-minutes: 105        # leave time for Save, which runs even if the script times out
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
       - name: Save
+        if: always()
         run: |
           git config user.name "trading-bot"
           git config user.email "trading-bot@users.noreply.github.com"

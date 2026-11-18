@@ -52,6 +52,7 @@ MAX_PER_SECTOR = 2
 BUFFER_RANK = 50          # daily check: sell a holding only if its smoothed rank drops below this
 SMOOTH_DAYS = 10          # daily check uses a 10-day smoothed score (ignores one-day noise)
 MAX_SWAPS_PER_DAY = 2     # limits trading (each swap costs ~0.7% incl. stamp duty)
+HURDLE = (BUY_COST_BPS + SELL_COST_BPS) / 1e4   # tax rule: a swap must be expected to earn more than its ~0.7% cost
 DROP_DAY = -0.08          # sudden-drop alert: down 8%+ in a day ...
 DROP_TOTAL = -0.15        # ... or 15%+ since bought; SELL if the raw (unsmoothed) rank is also worse than BUFFER_RANK
 SIGNAL_MODEL = os.environ.get("TS_SIGNAL_MODEL", "auto")
@@ -307,41 +308,53 @@ def daily_swaps(weights, scores_today, sector_of, forced=()):
     return swaps, ranks
 
 
-def simulate(score_w, ret_next, sector_of, daily_check, members):
-    """Day-by-day simulation with stamp duty. Returns daily net returns."""
-    days = score_w.index
-    w = pd.Series(dtype=float)
-    out = {}
-    for i, d in enumerate(days[:-1]):
-        s = score_w.loc[d].dropna()
-        s = s[s.index.isin(members.columns[members.loc[d].values])] if members is not None else s
-        cost = 0.0
-        if i % H == 0:
-            if s.empty:
-                continue
-            picks = pick_with_caps(s.sort_values(ascending=False).index, TOP_N, MAX_PER_SECTOR, sector_of)
-            new = pd.Series(1 / len(picks), index=picks)
-            diff = new.sub(w, fill_value=0)
-            cost = diff.clip(lower=0).sum() * BUY_COST_BPS / 1e4 + (-diff.clip(upper=0)).sum() * SELL_COST_BPS / 1e4
-            w = new
-        elif daily_check and len(w) and not s.empty:
-            swaps, _ = daily_swaps(w, s, sector_of)
-            for old, new_t in swaps:
-                val = w.pop(old)
-                w[new_t] = val
-                cost += val * (BUY_COST_BPS + SELL_COST_BPS) / 1e4
-        if w.empty:
+def score_slopes(score_w, fwd_ex, members):
+    """How much extra next-month return a better rank has delivered so far (pooled OLS slope of the next-21-day
+    excess return on score percentile). Uses only rows whose outcome was already known on each day (lag H+1)."""
+    pct = score_w.where(members).rank(axis=1, pct=True)
+    y = fwd_ex.where(pct.notna()); x = pct.where(y.notna())
+    agg = pd.DataFrame({"n": x.notna().sum(1), "sx": x.sum(1), "sy": y.sum(1), "sxy": (x * y).sum(1), "sxx": (x * x).sum(1)})
+    c = agg.cumsum().shift(H + 1)
+    known_days = agg["n"].gt(0).cumsum().shift(H + 1)
+    slope = (c.n * c.sxy - c.sx * c.sy) / (c.n * c.sxx - c.sx ** 2)
+    return slope.where(known_days >= 126), pct
+
+
+def tax_check(old, new, pct, slope, forced=()):
+    """(go_ahead, expected_gain). Swap only if slope x rank improvement beats the ~0.7% round-trip cost.
+    Forced sells (sudden drop, left the index) and days without a calibration always go ahead."""
+    if old in forced or slope is None or not np.isfinite(slope) or pd.isna(pct.get(old)) or pd.isna(pct.get(new)):
+        return True, None
+    gain = float(slope * (pct[new] - pct[old]))
+    return gain > HURDLE, gain
+
+
+def monthly_swaps(held, ranked, pct, slope, live, sector_of):
+    """Tax-aware monthly re-pick: for each holding that dropped out of the top picks (worst first), find the best
+    replacement and swap only if the expected gain beats the tax. Holdings that left the index are always swapped."""
+    picks = pick_with_caps(ranked, TOP_N, MAX_PER_SECTOR, sector_of)
+    outs = sorted([t for t in held if t not in picks], key=lambda t: pct.get(t, -1) if pd.notna(pct.get(t)) else -1)
+    cands = [t for t in ranked if t not in held]
+    cur, swaps, kept = list(held), [], []
+    for old in outs:
+        keep = [h for h in cur if h != old]
+        repl = pick_with_caps(cands, 1, MAX_PER_SECTOR, sector_of, held=keep)
+        if not repl:
             continue
-        r = ret_next.loc[d, w.index].fillna(0.0)
-        gross = float((w * r).sum())
-        out[d] = gross - cost
-        w = w * (1 + r) / (1 + gross)                               # weights drift with prices
-    return pd.Series(out)
+        forced = [old] if old not in live else []
+        ok, gain = tax_check(old, repl[0], pct, slope, forced)
+        if ok:
+            swaps.append((old, repl[0], gain)); cur = keep + [repl[0]]; cands.remove(repl[0])
+        else:
+            kept.append((old, repl[0], gain))
+    return swaps, kept
 
 
-def simulate_daily(score_w, smooth_w, ret_next, sector_of, members, drop_rule=True):
-    """Monthly re-pick on raw scores; in between, daily check on SMOOTHED scores (+ sudden-drop rule)."""
+def simulate(score_w, smooth_w, ret_next, sector_of, members, daily=True, tax=True, slopes=None):
+    """Day-by-day backtest with stamp duty. Monthly re-pick on raw scores; if `daily`, a daily check on SMOOTHED
+    scores (+ sudden-drop rule) in between. If `tax`, swaps must beat the ~0.7% cost (see tax_check)."""
     days = score_w.index
+    (slope_r, pct_r), (slope_s, pct_s) = slopes if tax else ((None, None), (None, None))
     w = pd.Series(dtype=float)
     out, growth, last_r = {}, {}, pd.Series(dtype=float)
     for i, d in enumerate(days[:-1]):
@@ -351,20 +364,27 @@ def simulate_daily(score_w, smooth_w, ret_next, sector_of, members, drop_rule=Tr
             s = score_w.loc[d].dropna(); s = s[s.index.isin(live)]
             if s.empty:
                 continue
-            picks = pick_with_caps(s.sort_values(ascending=False).index, TOP_N, MAX_PER_SECTOR, sector_of)
-            new = pd.Series(1 / len(picks), index=picks)
+            ranked = s.sort_values(ascending=False).index
+            b = slope_r.get(d, np.nan) if tax else np.nan
+            if w.empty or not np.isfinite(b):
+                names = pick_with_caps(ranked, TOP_N, MAX_PER_SECTOR, sector_of)
+            else:
+                swaps, _ = monthly_swaps(list(w.index), ranked, pct_r.loc[d], b, set(live), sector_of)
+                gone = {o for o, _, _ in swaps}
+                names = [t for t in w.index if t not in gone] + [n for _, n, _ in swaps]
+            new = pd.Series(1 / len(names), index=names)
             diff = new.sub(w, fill_value=0)
             cost = diff.clip(lower=0).sum() * BUY_COST_BPS / 1e4 + (-diff.clip(upper=0)).sum() * SELL_COST_BPS / 1e4
             w = new
-            growth = {t: growth.get(t, 1.0) if t in growth else 1.0 for t in w.index}
-        elif len(w):
+            growth = {t: growth.get(t, 1.0) for t in w.index}
+        elif daily and len(w):
             sm = smooth_w.loc[d].dropna(); sm = sm[sm.index.isin(live)]
             if not sm.empty:
-                forced = []
-                if drop_rule:
-                    raw = score_w.loc[d].dropna(); raw = raw[raw.index.isin(live)]
-                    forced, _ = drop_sells(w, last_r, {t: g - 1 for t, g in growth.items()}, raw)
+                raw = score_w.loc[d].dropna(); raw = raw[raw.index.isin(live)]
+                forced, _ = drop_sells(w, last_r, {t: g - 1 for t, g in growth.items()}, raw)
                 for old, new_t in daily_swaps(w, sm, sector_of, forced)[0]:
+                    if tax and not tax_check(old, new_t, pct_s.loc[d], slope_s.get(d, np.nan), forced)[0]:
+                        continue
                     val = w.pop(old); w[new_t] = val; growth.pop(old, None); growth[new_t] = 1.0
                     cost += val * (BUY_COST_BPS + SELL_COST_BPS) / 1e4
         if w.empty:
@@ -372,8 +392,8 @@ def simulate_daily(score_w, smooth_w, ret_next, sector_of, members, drop_rule=Tr
         r = ret_next.loc[d, w.index].fillna(0.0)
         gross = float((w * r).sum())
         out[d] = gross - cost
-        w = w * (1 + r) / (1 + gross)
-        last_r = r                                           # tomorrow's "today's move"
+        w = w * (1 + r) / (1 + gross)                               # weights drift with prices
+        last_r = r                                                  # tomorrow's "today's move"
         for t in w.index:
             growth[t] = growth.get(t, 1.0) * (1 + r[t])
     return pd.Series(out)
@@ -391,13 +411,18 @@ def run_backtest(preds, targets, close, bench, mask, sector_of):
     ret_next = close.pct_change(fill_method=None).shift(-1)
     days = preds.index.get_level_values("date").unique().sort_values()
     members = mask.loc[days]
-    curves, nodrop = {}, {}
+    fwd = (close.shift(-H) / close - 1).reindex(days).where(members)
+    fwd_ex = fwd.sub(fwd.mean(axis=1), axis=0)                      # next-month return vs the average member
+    curves, notax, calibration = {}, {}, {}
     for s in SCORES:
         wide = preds[s].unstack("ticker").reindex(days)
-        curves[f"{s} · monthly"] = simulate(wide, ret_next, sector_of, False, members)
         smooth = wide.ewm(span=SMOOTH_DAYS, min_periods=1).mean().where(wide.notna())      # past days only
-        curves[f"{s} · daily check"] = simulate_daily(wide, smooth, ret_next, sector_of, members, drop_rule=True)
-        nodrop[s] = stats(simulate_daily(wide, smooth, ret_next, sector_of, members, drop_rule=False))
+        slopes = (score_slopes(wide, fwd_ex, members), score_slopes(smooth, fwd_ex, members))
+        last = lambda x: float(x.dropna().iloc[-1]) if x.notna().any() else None
+        calibration[s] = {"raw": last(slopes[0][0]), "smooth": last(slopes[1][0])}
+        curves[f"{s} · monthly"] = simulate(wide, smooth, ret_next, sector_of, members, daily=False, slopes=slopes)
+        curves[f"{s} · daily check"] = simulate(wide, smooth, ret_next, sector_of, members, daily=True, slopes=slopes)
+        notax[s] = stats(simulate(wide, smooth, ret_next, sector_of, members, daily=True, tax=False))
         log(f"simulated {s}")
     curves["Equal-weight (all)"] = _equal_weight(members, ret_next)
     idx = curves["Equal-weight (all)"].index
@@ -412,10 +437,10 @@ def run_backtest(preds, targets, close, bench, mask, sector_of):
               for k, r in curves.items()}
     daily_vs_monthly = [{"model": s, "sharpe_monthly": table[f"{s} · monthly"]["Sharpe"],
                          "sharpe_daily": table[f"{s} · daily check"]["Sharpe"],
-                         "sharpe_daily_no_drop_rule": round(nodrop[s]["Sharpe"], 4),
+                         "sharpe_daily_no_tax_rule": round(notax[s]["Sharpe"], 4),
                          "cagr_monthly": table[f"{s} · monthly"]["CAGR"],
                          "cagr_daily": table[f"{s} · daily check"]["CAGR"]} for s in SCORES]
-    return {"table": table, "auc": auc, "yearly": yearly, "growth": growth, "daily_vs_monthly": daily_vs_monthly,
+    return {"table": table, "auc": auc, "calibration": calibration, "yearly": yearly, "growth": growth, "daily_vs_monthly": daily_vs_monthly,
             "period": [idx[0].strftime("%Y-%m-%d"), idx[-1].strftime("%Y-%m-%d")]}
 
 
@@ -572,10 +597,23 @@ def main():
         state["bench_units"] = {k: START_CAPITAL / float(bench[v].iloc[-1]) for k, v in BENCHMARKS.items()}
         state["start_date"] = today
 
-    trades, alerts = [], []
+    trades, alerts, held_back = [], [], []
+    cal = (backtest.get("calibration") or {}).get(model) or {}
+    slope_raw, slope_smooth = cal.get("raw"), cal.get("smooth")
     if monthly:
         value = state["cash_gbp"] + sum(p["value_gbp"] for p in state["positions"].values())
-        picks = pick_with_caps(scores.index, TOP_N, MAX_PER_SECTOR, sector_of)
+        why_of = {}
+        if state["positions"] and slope_raw is not None:
+            m_swaps, held_back = monthly_swaps(list(state["positions"]), scores.index, scores.rank(pct=True),
+                                               slope_raw, set(live_now), sector_of)
+            gone = {o for o, _, _ in m_swaps}
+            picks = [t for t in state["positions"] if t not in gone] + [n for _, n, _ in m_swaps]
+            for o, n, g in m_swaps:
+                why_of[o] = f"monthly re-pick: {n.replace('.L', '')} expected {g:+.1%} better, beats the {HURDLE:.1%} tax" \
+                    if g is not None else "left the index"
+                why_of[n] = f"monthly re-pick: replaces {o.replace('.L', '')}"
+        else:
+            picks = pick_with_caps(scores.index, TOP_N, MAX_PER_SECTOR, sector_of)
         target_each = value / len(picks) / (1 + BUY_COST_BPS / 1e4)
         sells = [t for t in state["positions"] if t not in picks]
         trades += trade(state, today, sells, {}, prices_today)
@@ -591,6 +629,8 @@ def main():
                 trades.append({"date": today, "ticker": t, "action": "TRIM", "change_gbp": round(gap, 2),
                                "cost_gbp": round(-gap * SELL_COST_BPS / 1e4, 3)})
         trades += trade(state, today, [], buys, prices_today)
+        for t in trades:
+            t["why"] = t.get("why") or why_of.get(t["ticker"], "monthly re-pick")
         state["last_rebalance"] = today
         state["model"] = model
         log(f"monthly re-pick: {', '.join(picks)}")
@@ -602,15 +642,21 @@ def main():
             alerts.append({"ticker": t, "day": round(day_ret.get(t, 0), 4), "since_entry": round(since_entry.get(t, 0), 4),
                            "raw_rank": int(raw_rank.get(t, 999)), "sell": t in forced})
         swaps, _ = daily_swaps(w, smooth, sector_of, forced)
+        pct_s = smooth.rank(pct=True)
         for old, new in swaps:
+            ok, gain = tax_check(old, new, pct_s, slope_smooth, forced)
+            if not ok:
+                held_back.append((old, new, gain))
+                continue
             amount = state["positions"][old]["value_gbp"] * (1 - SELL_COST_BPS / 1e4) / (1 + BUY_COST_BPS / 1e4)
             if old in forced:
                 why = (f"sudden drop ({day_ret.get(old, 0):+.1%} today, {since_entry.get(old, 0):+.1%} since bought) "
                        f"and model rank fell to {int(raw_rank.get(old, 999))}")
             else:
-                why = f"10-day smoothed rank fell below {BUFFER_RANK}"
+                why = f"10-day smoothed rank fell below {BUFFER_RANK}" + (
+                    f"; {new.replace('.L', '')} expected {gain:+.1%} better, beats the {HURDLE:.1%} tax" if gain is not None else "")
             trades += trade(state, today, [old], {new: amount}, prices_today, why=why)
-        log(f"daily check: {len(swaps)} swap(s) {swaps}; drop alerts {drop_hits}")
+        log(f"daily check: {len(swaps) - len(held_back)} swap(s); held back by tax rule {held_back}; drop alerts {drop_hits}")
 
     ranks = smooth.rank(ascending=False)
     for t, p in state["positions"].items():
@@ -652,7 +698,10 @@ def main():
         "watchlist": [{"ticker": t, "rank": int(ranks[t]), "sector": sector_of.get(t, "Unknown"), "score": round(float(smooth[t]), 4)}
                       for t in smooth.index[:15]],
         "smooth_days": SMOOTH_DAYS, "max_swaps_per_day": MAX_SWAPS_PER_DAY,
-        "today": {"type": "monthly re-pick" if monthly else "daily check", "trades": trades, "drop_alerts": alerts},
+        "today": {"type": "monthly re-pick" if monthly else "daily check", "trades": trades, "drop_alerts": alerts,
+                  "held_back": [{"keep": o, "instead_of": n, "expected_gain": None if g is None else round(g, 4)}
+                                for o, n, g in held_back]},
+        "tax_rule": {"hurdle": HURDLE, "slope_raw": slope_raw, "slope_smooth": slope_smooth},
         "last_trades": {"date": state.get("last_trade_date"), "trades": state.get("last_trades", [])},
         "last_rebalance": state["last_rebalance"],
         "next_rebalance_in_trading_days": max(H - len(dates[dates > pd.Timestamp(state["last_rebalance"])]), 0),
@@ -683,11 +732,14 @@ def notify_evening(results, monthly, trades, alerts):
     sells = [t for t in trades if t["action"] == "SELL"]
     buys = [t for t in trades if t["action"] in ("BUY", "TOP UP")]
     lines = []
-    if monthly:
-        title, prio, tags = "📅 Monthly re-pick: new top 10", 4, ["calendar"]
-        lines.append("Buy: " + ", ".join(nm(t["ticker"]) for t in buys))
+    if monthly and not sells and not buys:
+        title, prio, tags = "📅 Monthly re-pick: no changes", 3, ["calendar"]
+        lines.append("Keeping all holdings: no swap was expected to beat the ~0.7% stamp duty + spread.")
+    elif monthly:
+        title, prio, tags = "📅 Monthly re-pick", 4, ["calendar"]
         if sells:
-            lines.append("Sell: " + ", ".join(nm(t["ticker"]) for t in sells))
+            lines.append("Sell: " + ", ".join(f"{nm(t['ticker'])} ({t.get('why', '')})" for t in sells))
+        lines.append("Buy: " + ", ".join(nm(t["ticker"]) for t in buys))
     elif trades:
         drop = any("sudden drop" in t.get("why", "") for t in sells)
         title = "🔴 SELL signal: sudden drop" if drop else f"🔁 Daily check: {len(sells)} swap(s)"

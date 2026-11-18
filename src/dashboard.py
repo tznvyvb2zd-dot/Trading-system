@@ -102,6 +102,14 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
                      ("Rank", lambda a: f"#{a['raw_rank']}"),
                      ("Decision", lambda a: "<span class='pill neg'>SELL</span>" if a["sell"] else "<span class='pill warn'>HOLD</span>")])
                  + "</div>")
+    hb = td.get("held_back") or []
+    tr = results.get("tax_rule") or {}
+    if hb:
+        drops += ("<div class='card'><div class='card-h'>🧾 Held back by the tax rule</div><p class='muted small'>The model "
+                  f"preferred another stock, but the expected gain didn't beat the {tr.get('hurdle', 0.007):.1%} cost of swapping "
+                  "(0.5% stamp duty + spread), so it keeps what it has.</p>" + _table(hb, [
+                      ("Keep", lambda a: f"<b>{nm(a['keep'])}</b>"), ("Instead of", lambda a: nm(a["instead_of"])),
+                      ("Expected gain", lambda a: "–" if a["expected_gain"] is None else _pct(a["expected_gain"]))]) + "</div>")
     ok = v["beats_ftse100"] and v["beats_ftse250"]
     verdict = (f"<div class='note {'pos' if ok else 'neg'}'><b>Backtest verdict:</b> {e(model)} with daily check "
                f"{'beats both' if ok else 'does <b>not</b> beat both'} FTSE trackers on risk-adjusted return (Sharpe "
@@ -135,8 +143,10 @@ def build_dashboard(results: dict, bt: dict, nav: pd.DataFrame) -> str:
         bt_html += ("<div class='card'><div class='card-h'>🔁 Does the daily check help? (Sharpe)</div>" + _table(dvm, [
             ("Model", lambda r: f"<b>{e(SHORT.get(r['model'], r['model']))}</b>"),
             ("Monthly", lambda r: f"{r['sharpe_monthly']:.2f}"), ("Daily check", lambda r: f"{r['sharpe_daily']:.2f}"),
-            ("No drop rule", lambda r: f"{r['sharpe_daily_no_drop_rule']:.2f}" if "sharpe_daily_no_drop_rule" in r else "–")]) +
-            "<p class='muted small'>Sharpe = return per unit of risk (higher is better), after 0.5% stamp duty + spread on every buy.</p></div>")
+            ("No tax rule", lambda r: f"{r['sharpe_daily_no_tax_rule']:.2f}" if "sharpe_daily_no_tax_rule" in r else "–")]) +
+            "<p class='muted small'>Sharpe = return per unit of risk (higher is better), after 0.5% stamp duty + spread on every buy. "
+            "Monthly and Daily check use the tax rule (swap only if the expected gain beats the ~0.7% cost); "
+            "“No tax rule” is the daily check without it.</p></div>")
         lab = lambda s: (SHORT.get(s.split(" · ")[0], s) + (" d" if "daily" in s else " m")) if " · " in s else \
             {"Equal-weight (all)": "EqW", "FTSE 100 tracker": "F100", "FTSE 250 tracker": "F250"}.get(s, s)
         years = sorted({y for s in key for y in bt["yearly"].get(s, {})})

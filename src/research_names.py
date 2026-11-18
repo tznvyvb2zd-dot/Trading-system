@@ -7,7 +7,7 @@ import yfinance as yf
 from trading_system import ROOT
 
 mem = pd.read_csv(ROOT / "data/uk/ftse350_membership.csv")
-tick = sorted({t for s in mem.tickers for t in s.split(";")})
+tick = sorted({t for s in mem.tickers for t in s.replace(";", ",").split(",") if t.strip()})
 rows = []
 for t in tick:
     info = {}

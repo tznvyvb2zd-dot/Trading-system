@@ -110,6 +110,10 @@ def fit_predict(spec, train, test, feats):
     X, Xt = train[feats], test[feats]
     if spec == "lgbm":
         m = _lgbm_cls(); m.fit(X, train["target"]); return m.predict_proba(Xt)[:, 1]
+    if spec.startswith("lgbm_t:"):                           # LightGBM classifier on an alternative target column
+        col = spec.split(":", 1)[1]
+        ok = train[col].notna()
+        m = _lgbm_cls(); m.fit(X[ok], train.loc[ok, col]); return m.predict_proba(Xt)[:, 1]
     if spec == "lr":
         m = _lr(); m.fit(X, train["target"]); return m.predict_proba(Xt)[:, 1]
     if spec == "lgbm_reg":

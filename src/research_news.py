@@ -38,10 +38,13 @@ def collect(shard, n=N_SHARDS):
     path = OUT / f"news_{shard}.csv.gz"
     rows = [pd.read_csv(path, parse_dates=["date"])] if path.exists() else []        # resume
     done = set(rows[0].ticker) if rows else set()
-    failed = []
+    failed, t0 = [], time.time()
     for i, (t, query) in enumerate(zip(q.ticker, q["query"])):
         if t in done:
             continue
+        if time.time() - t0 > 85 * 60:                            # stop cleanly before GitHub's time limit
+            print(f"[{shard}] time budget used; resuming next run", flush=True)
+            break
         tone = fetch(query, "timelinetone"); time.sleep(8)
         vol = fetch(query, "timelinevolraw"); time.sleep(8)
         if tone is None or vol is None:

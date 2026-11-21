@@ -3,4 +3,8 @@ __pycache__/
 .venv/
 research/cache/
 research/v2/
-research/v3/*.pkl.gz
+research/v3/preds_feats.pkl.gz
+research/v3/preds_models.pkl.gz
+research/v3/close.pkl.gz
+research/v3/mask.pkl.gz
+research/v3/bench.pkl.gz

@@ -2,63 +2,63 @@
   "cash_gbp": 0.0,
   "positions": {
     "CMCX.L": {
-      "value_gbp": 9.361588836703215,
-      "last_px": 647.0,
+      "value_gbp": 9.679911795601932,
+      "last_px": 669.0,
       "entry_px": 687.0,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 6.87,
-      "rank_today": 72,
+      "rank_today": 54,
       "sector": "Financial Services"
     },
     "TATE.L": {
-      "value_gbp": 9.83413853477532,
-      "last_px": 555.5,
+      "value_gbp": 9.878396583986731,
+      "last_px": 558.0,
       "entry_px": 561.5,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 5.615,
-      "rank_today": 305,
+      "rank_today": 211,
       "sector": "Food Producers"
     },
     "PTEC.L": {
-      "value_gbp": 9.544552939559164,
-      "last_px": 337.6000061035156,
+      "value_gbp": 9.73114685696894,
+      "last_px": 344.20001220703125,
       "entry_px": 351.6000061035156,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 3.516000061035156,
-      "rank_today": 4,
+      "rank_today": 2,
       "sector": "Software & Computer Services"
     },
     "GLEN.L": {
-      "value_gbp": 9.09185215970343,
-      "last_px": 449.5,
+      "value_gbp": 9.374013335704289,
+      "last_px": 463.45001220703125,
       "entry_px": 491.45001220703125,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 4.914500122070312,
-      "rank_today": 36,
+      "rank_today": 34,
       "sector": "Industrial Metals and Mining"
     },
     "MNTN.L": {
-      "value_gbp": 9.751915220328598,
-      "last_px": 2.069999933242798,
+      "value_gbp": 10.128801608643503,
+      "last_px": 2.1500000953674316,
       "entry_px": 2.109999895095825,
       "entry_date": "2026-11-17",
       "currency": "USD",
       "px_gbp": 2.109999895095825,
-      "rank_today": 6,
+      "rank_today": 10,
       "sector": "Investment Trusts"
     },
     "RIO.L": {
-      "value_gbp": 9.262120979722194,
-      "last_px": 5640.0,
+      "value_gbp": 9.469040703737264,
+      "last_px": 5766.0,
       "entry_px": 6053.0,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 60.53,
-      "rank_today": 160,
+      "rank_today": 143,
       "sector": "Industrial Metals and Mining"
     },
     "MTO.L": {
@@ -68,37 +68,37 @@
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 2.073999938964844,
-      "rank_today": 223,
+      "rank_today": 219,
       "sector": "Support Services"
     },
     "ROR.L": {
-      "value_gbp": 9.936326642696923,
-      "last_px": 493.0,
+      "value_gbp": 9.956481463473185,
+      "last_px": 494.0,
       "entry_px": 493.20001220703125,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 4.9320001220703125,
-      "rank_today": 344,
+      "rank_today": 335,
       "sector": "Industrial Engineering"
     },
     "HSBA.L": {
-      "value_gbp": 9.294136336294898,
-      "last_px": 1234.0,
+      "value_gbp": 9.595404937147244,
+      "last_px": 1274.0,
       "entry_px": 1319.800048828125,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 13.19800048828125,
-      "rank_today": 16,
+      "rank_today": 12,
       "sector": "Banks"
     },
     "HANA.L": {
-      "value_gbp": 9.755133793512218,
-      "last_px": 316.0,
+      "value_gbp": 9.816875146635715,
+      "last_px": 318.0,
       "entry_px": 322.0,
       "entry_date": "2026-11-17",
       "currency": "GBp",
       "px_gbp": 3.22,
-      "rank_today": 131,
+      "rank_today": 115,
       "sector": "Investment Trusts"
     }
   },
@@ -192,5 +192,5 @@
     }
   ],
   "last_trade_date": "2026-11-17",
-  "last_date": "2026-11-20"
+  "last_date": "2026-11-23"
 }

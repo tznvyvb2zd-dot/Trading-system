@@ -9,3 +9,5 @@ date,ticker,action,change_gbp,cost_gbp,why
 2026-11-17,ROR.L,BUY,9.94,0.06,monthly re-pick
 2026-11-17,HSBA.L,BUY,9.94,0.06,monthly re-pick
 2026-11-17,HANA.L,BUY,9.94,0.06,monthly re-pick
+2026-11-26,CMCX.L,SELL,-8.39,0.008,"sudden drop (-10.8% today, -15.6% since bought) and model rank fell to 129"
+2026-11-26,BGEO.L,BUY,8.33,0.05,replacement

@@ -1,123 +1,123 @@
 {
   "market": "UK (FTSE 350)",
-  "generated_at_utc": "2026-11-27 03:50",
-  "market_date": "2026-11-25",
+  "generated_at_utc": "2026-11-28 03:34",
+  "market_date": "2026-11-26",
   "model": "LightGBM ranked",
   "buffer_rank": 50,
   "paper": {
     "start_date": "2026-11-17",
     "start_value_gbp": 100.0,
-    "value_gbp": 95.24,
+    "value_gbp": 95.35,
     "cash_gbp": 0.0,
-    "return_since_start": -0.0476,
+    "return_since_start": -0.0465,
     "benchmarks": {
       "FTSE 100 tracker": {
-        "value_gbp": 97.57,
-        "return_since_start": -0.0243
+        "value_gbp": 99.44,
+        "return_since_start": -0.0056
       },
       "FTSE 250 tracker": {
-        "value_gbp": 97.01,
-        "return_since_start": -0.0299
+        "value_gbp": 98.89,
+        "return_since_start": -0.0111
       }
     },
-    "day_change": -0.0111
+    "day_change": 0.0012
   },
   "holdings": [
     {
-      "ticker": "PTEC.L",
-      "sector": "Software & Computer Services",
-      "value_gbp": 9.61,
-      "rank_today": 3,
-      "return_since_entry": -0.033,
-      "entry_date": "2026-11-17",
-      "price_gbp": 3.4,
-      "shares": 2.8272
-    },
-    {
-      "ticker": "HSBA.L",
+      "ticker": "BGEO.L",
       "sector": "Banks",
-      "value_gbp": 9.17,
-      "rank_today": 5,
-      "return_since_entry": -0.0777,
-      "entry_date": "2026-11-17",
-      "price_gbp": 12.172,
-      "shares": 0.7532
+      "value_gbp": 8.33,
+      "rank_today": 1,
+      "return_since_entry": 0.0,
+      "entry_date": "2026-11-26",
+      "price_gbp": 120.1,
+      "shares": 0.0694
     },
     {
       "ticker": "MNTN.L",
       "sector": "Investment Trusts",
-      "value_gbp": 9.7,
-      "rank_today": 8,
-      "return_since_entry": -0.0237,
+      "value_gbp": 9.85,
+      "rank_today": 5,
+      "return_since_entry": -0.0095,
       "entry_date": "2026-11-17",
-      "price_gbp": 2.06,
+      "price_gbp": 2.09,
       "shares": 4.7111
+    },
+    {
+      "ticker": "HSBA.L",
+      "sector": "Banks",
+      "value_gbp": 9.38,
+      "rank_today": 6,
+      "return_since_entry": -0.0564,
+      "entry_date": "2026-11-17",
+      "price_gbp": 12.454,
+      "shares": 0.7532
+    },
+    {
+      "ticker": "PTEC.L",
+      "sector": "Software & Computer Services",
+      "value_gbp": 9.92,
+      "rank_today": 7,
+      "return_since_entry": -0.0023,
+      "entry_date": "2026-11-17",
+      "price_gbp": 3.508,
+      "shares": 2.8272
     },
     {
       "ticker": "GLEN.L",
       "sector": "Industrial Metals and Mining",
-      "value_gbp": 8.74,
-      "rank_today": 45,
-      "return_since_entry": -0.1205,
+      "value_gbp": 9.04,
+      "rank_today": 32,
+      "return_since_entry": -0.091,
       "entry_date": "2026-11-17",
-      "price_gbp": 4.3225,
+      "price_gbp": 4.4675,
       "shares": 2.0227
-    },
-    {
-      "ticker": "CMCX.L",
-      "sector": "Financial Services",
-      "value_gbp": 9.4,
-      "rank_today": 90,
-      "return_since_entry": -0.0539,
-      "entry_date": "2026-11-17",
-      "price_gbp": 6.5,
-      "shares": 1.4469
-    },
-    {
-      "ticker": "RIO.L",
-      "sector": "Industrial Metals and Mining",
-      "value_gbp": 9.08,
-      "rank_today": 118,
-      "return_since_entry": -0.0869,
-      "entry_date": "2026-11-17",
-      "price_gbp": 55.27,
-      "shares": 0.1642
     },
     {
       "ticker": "HANA.L",
       "sector": "Investment Trusts",
-      "value_gbp": 9.76,
-      "rank_today": 182,
-      "return_since_entry": -0.0186,
+      "value_gbp": 9.79,
+      "rank_today": 177,
+      "return_since_entry": -0.0155,
       "entry_date": "2026-11-17",
-      "price_gbp": 3.16,
+      "price_gbp": 3.17,
       "shares": 3.0871
+    },
+    {
+      "ticker": "RIO.L",
+      "sector": "Industrial Metals and Mining",
+      "value_gbp": 9.25,
+      "rank_today": 196,
+      "return_since_entry": -0.0699,
+      "entry_date": "2026-11-17",
+      "price_gbp": 56.3,
+      "shares": 0.1642
     },
     {
       "ticker": "TATE.L",
       "sector": "Food Producers",
-      "value_gbp": 9.8,
-      "rank_today": 227,
-      "return_since_entry": -0.0142,
+      "value_gbp": 9.89,
+      "rank_today": 204,
+      "return_since_entry": -0.0053,
       "entry_date": "2026-11-17",
-      "price_gbp": 5.535,
+      "price_gbp": 5.585,
       "shares": 1.7703
     },
     {
       "ticker": "MTO.L",
       "sector": "Support Services",
-      "value_gbp": 10.02,
-      "rank_today": 245,
-      "return_since_entry": 0.0077,
+      "value_gbp": 9.96,
+      "rank_today": 260,
+      "return_since_entry": 0.0019,
       "entry_date": "2026-11-17",
-      "price_gbp": 2.0899,
+      "price_gbp": 2.078,
       "shares": 4.7928
     },
     {
       "ticker": "ROR.L",
       "sector": "Industrial Engineering",
       "value_gbp": 9.96,
-      "rank_today": 338,
+      "rank_today": 346,
       "return_since_entry": 0.0016,
       "entry_date": "2026-11-17",
       "price_gbp": 4.94,
@@ -129,109 +129,134 @@
       "ticker": "BGEO.L",
       "rank": 1,
       "sector": "Banks",
-      "score": 0.5811
+      "score": 0.5906
     },
     {
       "ticker": "EMG.L",
       "rank": 2,
       "sector": "Investment Trusts",
-      "score": 0.5718
-    },
-    {
-      "ticker": "PTEC.L",
-      "rank": 3,
-      "sector": "Software & Computer Services",
-      "score": 0.5586
+      "score": 0.5631
     },
     {
       "ticker": "APN.L",
-      "rank": 4,
+      "rank": 3,
       "sector": "Food Producers",
-      "score": 0.5556
-    },
-    {
-      "ticker": "HSBA.L",
-      "rank": 5,
-      "sector": "Banks",
-      "score": 0.553
-    },
-    {
-      "ticker": "PAG.L",
-      "rank": 6,
-      "sector": "Financial Services",
-      "score": 0.5488
+      "score": 0.5618
     },
     {
       "ticker": "SDLF.L",
-      "rank": 7,
+      "rank": 4,
       "sector": "Life Insurance",
-      "score": 0.5475
+      "score": 0.5578
     },
     {
       "ticker": "MNTN.L",
-      "rank": 8,
+      "rank": 5,
       "sector": "Investment Trusts",
-      "score": 0.5467
+      "score": 0.5523
     },
     {
-      "ticker": "KLR.L",
-      "rank": 9,
-      "sector": "Construction & Materials",
-      "score": 0.5453
-    },
-    {
-      "ticker": "BARC.L",
-      "rank": 10,
+      "ticker": "HSBA.L",
+      "rank": 6,
       "sector": "Banks",
-      "score": 0.5444
+      "score": 0.5521
+    },
+    {
+      "ticker": "PTEC.L",
+      "rank": 7,
+      "sector": "Software & Computer Services",
+      "score": 0.5494
+    },
+    {
+      "ticker": "PAG.L",
+      "rank": 8,
+      "sector": "Financial Services",
+      "score": 0.5459
     },
     {
       "ticker": "AMRQ.L",
-      "rank": 11,
+      "rank": 9,
       "sector": "Industrial Metals and Mining",
-      "score": 0.5413
+      "score": 0.5458
     },
     {
-      "ticker": "LWDB.L",
-      "rank": 12,
-      "sector": "Investment Trusts",
-      "score": 0.5404
+      "ticker": "ITH.L",
+      "rank": 10,
+      "sector": "Non-Renewable Energy",
+      "score": 0.5455
+    },
+    {
+      "ticker": "STAN.L",
+      "rank": 11,
+      "sector": "Banks",
+      "score": 0.5442
     },
     {
       "ticker": "VCT.L",
-      "rank": 13,
+      "rank": 12,
       "sector": "Chemicals",
-      "score": 0.5399
+      "score": 0.5435
     },
     {
-      "ticker": "ENQ.L",
-      "rank": 14,
-      "sector": "Oil & Gas Producers",
-      "score": 0.5374
-    },
-    {
-      "ticker": "GROW.L",
-      "rank": 15,
+      "ticker": "ASHM.L",
+      "rank": 13,
       "sector": "Financial Services",
-      "score": 0.5372
+      "score": 0.5433
+    },
+    {
+      "ticker": "RHIM.L",
+      "rank": 14,
+      "sector": "Support Services",
+      "score": 0.5418
+    },
+    {
+      "ticker": "HTWS.L",
+      "rank": 15,
+      "sector": "Telecomms",
+      "score": 0.5407
     }
   ],
   "smooth_days": 10,
   "max_swaps_per_day": 2,
   "today": {
     "type": "daily check",
-    "trades": [],
-    "drop_alerts": [],
+    "trades": [
+      {
+        "date": "2026-11-26",
+        "ticker": "CMCX.L",
+        "action": "SELL",
+        "change_gbp": -8.39,
+        "cost_gbp": 0.008,
+        "why": "sudden drop (-10.8% today, -15.6% since bought) and model rank fell to 129"
+      },
+      {
+        "date": "2026-11-26",
+        "ticker": "BGEO.L",
+        "action": "BUY",
+        "change_gbp": 8.33,
+        "cost_gbp": 0.05,
+        "why": "replacement"
+      }
+    ],
+    "drop_alerts": [
+      {
+        "ticker": "CMCX.L",
+        "day": -0.1077,
+        "since_entry": -0.1557,
+        "raw_rank": 129,
+        "sell": true
+      }
+    ],
     "held_back": [
       {
         "keep": "ROR.L",
-        "instead_of": "BGEO.L",
-        "expected_gain": 0.0051
+        "instead_of": "APN.L",
+        "expected_gain": 0.0052
       },
       {
         "keep": "MTO.L",
-        "instead_of": "APN.L",
-        "expected_gain": 0.0036
+        "instead_of": "SDLF.L",
+        "expected_gain": 0.0039
       }
     ]
   },
@@ -241,92 +266,28 @@
     "slope_smooth": 0.005242193984284178
   },
   "last_trades": {
-    "date": "2026-11-17",
+    "date": "2026-11-26",
     "trades": [
       {
-        "date": "2026-11-17",
+        "date": "2026-11-26",
         "ticker": "CMCX.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
+        "action": "SELL",
+        "change_gbp": -8.39,
+        "cost_gbp": 0.008,
+        "why": "sudden drop (-10.8% today, -15.6% since bought) and model rank fell to 129"
       },
       {
-        "date": "2026-11-17",
-        "ticker": "TATE.L",
+        "date": "2026-11-26",
+        "ticker": "BGEO.L",
         "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "PTEC.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "GLEN.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "MNTN.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "RIO.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "MTO.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "ROR.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "HSBA.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
-      },
-      {
-        "date": "2026-11-17",
-        "ticker": "HANA.L",
-        "action": "BUY",
-        "change_gbp": 9.94,
-        "cost_gbp": 0.06,
-        "why": "monthly re-pick"
+        "change_gbp": 8.33,
+        "cost_gbp": 0.05,
+        "why": "replacement"
       }
     ]
   },
   "last_rebalance": "2026-11-18",
-  "next_rebalance_in_trading_days": 16,
+  "next_rebalance_in_trading_days": 15,
   "backtest": {
     "generated": "2026-11-18",
     "period": [
@@ -499,8 +460,8 @@
   "my_portfolio": {
     "amount_gbp": 85.59,
     "start_date": "2026-11-18",
-    "value_gbp": 82.99,
-    "return": -0.0304,
+    "value_gbp": 83.09,
+    "return": -0.0293,
     "tracking": true
   }
 }
